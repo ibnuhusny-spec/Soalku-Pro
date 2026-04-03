@@ -27,7 +27,7 @@
         </div>
 
         <div id="modalPengaturan" class="fixed inset-0 z-50 bg-black/60 hidden flex-col items-center justify-center p-4 backdrop-blur-sm">
-            <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-8">
+            <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
                 <h2 class="text-2xl font-bold text-gray-800 mb-2">⚙️ Pengaturan Sistem</h2>
                 <div class="space-y-4 mt-6">
                     <div>
@@ -37,7 +37,7 @@
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">Pilih Model Gemini</label>
                         <select id="selectModel" class="w-full border rounded-lg p-3 outline-none bg-white">
-                            <optgroup label="Daftar Model">
+                            <optgroup label="Daftar Model Lengkap">
                                 <option value="gemini-2.5-flash">gemini-2.5-flash</option>
                                 <option value="gemini-2.5-pro">gemini-2.5-pro</option>
                                 <option value="gemini-2.0-flash">gemini-2.0-flash</option>
@@ -80,6 +80,11 @@
                     </div>
                     <div id="wrapperModelManual" class="hidden">
                         <input type="text" id="inputModelManual" placeholder="misal: gemini-4.0" class="w-full border rounded-lg p-3">
+                    </div>
+                    <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl">
+                        <label class="block text-sm font-bold text-purple-900 mb-1">Pixabay API Key (Pencari Gambar)</label>
+                        <p class="text-xs text-purple-700 mb-2">Dapatkan gratis di <a href="https://pixabay.com/api/docs/" target="_blank" class="font-bold underline">pixabay.com/api/docs</a></p>
+                        <input type="password" id="inputPixabayKey" placeholder="Paste kode API Pixabay..." class="w-full border rounded-lg p-3 outline-none text-sm">
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">URL Web App Google Sheets</label>
@@ -256,6 +261,8 @@
         let savedApiKey = localStorage.getItem('soalku_apiKey') || "";
         let savedModel = localStorage.getItem('soalku_aiModel') || "gemini-3-flash-preview";
         let savedSheetsUrl = localStorage.getItem('soalku_sheetsUrl') || ""; 
+        let savedPixabayKey = localStorage.getItem('soalku_pixabayKey') || ""; 
+        
         let strukturSoal = []; let hasilGenerate = []; let kuisTimeout;
 
         function getFormattedDate() {
@@ -284,7 +291,10 @@
         document.getElementById('selectModel').onchange = (e) => document.getElementById('wrapperModelManual').classList.toggle('hidden', e.target.value !== 'custom');
         
         function bukaPengaturan(bisaBatal = true) {
-            document.getElementById('inputApiKey').value = savedApiKey; document.getElementById('inputSheetsUrl').value = savedSheetsUrl;
+            document.getElementById('inputApiKey').value = savedApiKey; 
+            document.getElementById('inputSheetsUrl').value = savedSheetsUrl;
+            document.getElementById('inputPixabayKey').value = savedPixabayKey;
+            
             let found = false; for(let opt of document.getElementById('selectModel').options) { if(opt.value === savedModel) { document.getElementById('selectModel').value = savedModel; found = true; break; } }
             if(!found && savedModel) { document.getElementById('selectModel').value = 'custom'; document.getElementById('wrapperModelManual').classList.remove('hidden'); document.getElementById('inputModelManual').value = savedModel; }
             document.getElementById('btnTutupPengaturan').style.display = bisaBatal ? 'block' : 'none'; modalPengaturan.classList.remove('hidden'); modalPengaturan.classList.add('flex');
@@ -292,10 +302,13 @@
         document.getElementById('btnBukaPengaturan').onclick = () => bukaPengaturan(true);
         document.getElementById('btnTutupPengaturan').onclick = () => { modalPengaturan.classList.remove('flex'); modalPengaturan.classList.add('hidden'); };
         document.getElementById('btnSimpanPengaturan').onclick = () => {
-            const key = document.getElementById('inputApiKey').value.trim(); let mdl = document.getElementById('selectModel').value; if(mdl === 'custom') mdl = document.getElementById('inputModelManual').value.trim() || "gemini-3-flash-preview";
+            const key = document.getElementById('inputApiKey').value.trim(); 
+            let mdl = document.getElementById('selectModel').value; if(mdl === 'custom') mdl = document.getElementById('inputModelManual').value.trim() || "gemini-3-flash-preview";
+            const pxb = document.getElementById('inputPixabayKey').value.trim();
+            
             if(!key || !mdl) return alert("API Key wajib diisi!");
-            localStorage.setItem('soalku_apiKey', key); localStorage.setItem('soalku_aiModel', mdl); localStorage.setItem('soalku_sheetsUrl', document.getElementById('inputSheetsUrl').value.trim());
-            savedApiKey = key; savedModel = mdl; savedSheetsUrl = localStorage.getItem('soalku_sheetsUrl');
+            localStorage.setItem('soalku_apiKey', key); localStorage.setItem('soalku_aiModel', mdl); localStorage.setItem('soalku_sheetsUrl', document.getElementById('inputSheetsUrl').value.trim()); localStorage.setItem('soalku_pixabayKey', pxb);
+            savedApiKey = key; savedModel = mdl; savedSheetsUrl = localStorage.getItem('soalku_sheetsUrl'); savedPixabayKey = pxb;
             modalPengaturan.classList.remove('flex'); modalPengaturan.classList.add('hidden');
         };
 
@@ -317,10 +330,10 @@
         };
         document.getElementById('btnResetAll').onclick = () => { if(confirm("Yakin hapus semua pengaturan struktur?")) { strukturSoal = []; renderTabelStruktur(); } };
 
-        // ================= GEMINI AI LOGIC (ANTI MACET VERCEL) =================
+        // ================= GEMINI AI LOGIC (DENGAN KEYWORD MAKER) =================
         document.getElementById('btnGenerateAI').onclick = async () => {
             if(!savedApiKey) {
-                alert("⚠️ API Key belum disetel! Harap masukkan API Key di menu Setting karena ini adalah web yang baru.");
+                alert("⚠️ API Key belum disetel! Harap masukkan API Key di menu Setting.");
                 return bukaPengaturan(false);
             }
             const mapel = document.getElementById('inputMapel').value; const topik = document.getElementById('inputTopik').value; const kelas = document.getElementById('inputKelas').value;
@@ -333,14 +346,14 @@
                 const genAI = new GoogleGenerativeAI(savedApiKey); const model = genAI.getGenerativeModel({ model: savedModel });
                 let rincianModul = ""; let totalSoal = 0;
                 strukturSoal.forEach((bag, i) => { totalSoal += bag.jumlah; let opsiTxt = bag.opsi ? `Buat opsi jawaban persis sebanyak ${bag.opsi} buah (A,B,C..).` : ''; rincianModul += `\n- Bagian ${i+1}: ${bag.jumlah} soal tipe "${bag.tipe}". Kesulitan: ${bag.sulit}. Level kognitif acak antara: [${bag.level}]. ${opsiTxt}`; });
+                
                 const prompt = `Anda adalah asisten pembuat soal ujian. Buatkan total ${totalSoal} soal untuk Fase/Kelas: ${kelas}, Mapel: ${mapel}, Topik: "${topik}".
                 STRUKTUR PEMBAGIAN SOAL:${rincianModul}
                 ATURAN WAJIB:
                 1. Jika ada teks Arab, WAJIB tulis dalam huruf Hijaiyah lengkap harakat.
                 2. Balas HANYA dengan 1 JSON Array murni yang berisi seluruh soal secara berurutan.
                 3. Struktur objek JSON wajib seperti ini:
-                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2"}]
-                Catatan: Field "opsi" wajib array string (kosongkan [] jika tipe Uraian/Isian).`;
+                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2", "keyword_gambar": "1-2 kata kunci bahasa Inggris yang paling mewakili visual soal ini untuk pencarian gambar"}]`;
 
                 const res = await Promise.race([
                     model.generateContent(prompt),
@@ -359,13 +372,13 @@
                 renderLaporan('soal');
             } catch (e) { 
                 console.error(e);
-                alert("❌ Gagal memproses soal!\n\nPenyebab mungkin:\n1. Internet lambat (Timeout).\n2. API Key salah.\n3. Model yang Anda pilih di Setting tidak mendukung fitur ini.\n\nSilakan coba lagi."); 
+                alert("❌ Gagal memproses soal!\n\nPenyebab mungkin:\n1. Internet lambat (Timeout).\n2. API Key salah.\n3. Model yang Anda pilih tidak mendukung fitur ini.\n\nSilakan coba lagi."); 
             } finally {
                 btn.innerHTML = "MULAI GENERATE SOAL AI ✨"; btn.disabled = false;
             }
         };
 
-        // ================= GAMBAR AI & MANUAL =================
+        // ================= IMAGE SEARCH PIXABAY (OTOMATIS & CEPAT) =================
         window.triggerUpload = (idx) => document.getElementById(`file-${idx}`).click();
         window.uploadGambar = (idx, input) => {
             if (input.files && input.files[0]) {
@@ -380,45 +393,52 @@
         };
 
         window.buatGambarAI = async (idx) => {
+            if(!savedPixabayKey) {
+                alert("⚠️ Pixabay API Key belum disetel!\nSilakan daftar gratis di pixabay.com/api/docs, lalu salin kuncinya dan masukkan ke menu ⚙️ Setting aplikasi ini.");
+                return bukaPengaturan(true);
+            }
+
             const btn = document.getElementById(`btn-ai-img-${idx}`);
-            btn.innerHTML = "⏳ Melukis... (Maks 20dtk)";
+            btn.innerHTML = "⏳ Mencari... (1-2 dtk)";
             btn.disabled = true;
 
             try {
-                const topikMateri = document.getElementById('inputTopik').value || "Pendidikan";
-                const promptBersih = `Ilustrasi buku pelajaran sekolah anak, topik: ${topikMateri}. Gambar 2D, vektor, jelas, warna cerah, tanpa ada teks tulisan di dalam gambar.`;
-                const finalPrompt = encodeURIComponent(promptBersih);
+                // Mengambil kata kunci Inggris yang sudah diracik cerdas oleh Gemini
+                const keyword = hasilGenerate[idx].keyword_gambar || "education";
+                const url = `https://pixabay.com/api/?key=${savedPixabayKey}&q=${encodeURIComponent(keyword)}&image_type=illustration&per_page=3&safesearch=true`;
                 
-                const imageUrl = `https://image.pollinations.ai/prompt/${finalPrompt}?width=512&height=512&nologo=true&seed=${Math.floor(Math.random() * 1000)}`;
+                const response = await fetch(url);
+                const data = await response.json();
                 
-                const controller = new AbortController();
-                const idTimeout = setTimeout(() => controller.abort(), 20000); 
-
-                const response = await fetch(imageUrl, { signal: controller.signal });
-                clearTimeout(idTimeout);
-
-                if (!response.ok) throw new Error("Server Error");
-                
-                const blob = await response.blob();
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const base64data = reader.result;
-                    hasilGenerate[idx].manualImg = base64data; 
+                if (data.hits && data.hits.length > 0) {
+                    const imageUrl = data.hits[0].webformatURL;
                     
-                    document.getElementById(`img-preview-${idx}`).src = base64data;
-                    document.getElementById(`img-preview-${idx}`).style.display = 'block';
-                    document.getElementById(`box-upload-${idx}`).innerHTML = '📁 Ganti Gambar';
-                    
-                    btn.innerHTML = "✨ Generate AI";
+                    // Tarik gambar lalu convert ke Base64 agar aman saat di-download ke Word
+                    const imgResponse = await fetch(imageUrl);
+                    const blob = await imgResponse.blob();
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const base64data = reader.result;
+                        hasilGenerate[idx].manualImg = base64data; 
+                        
+                        document.getElementById(`img-preview-${idx}`).src = base64data;
+                        document.getElementById(`img-preview-${idx}`).style.display = 'block';
+                        document.getElementById(`box-upload-${idx}`).innerHTML = '📁 Ganti Manual';
+                        
+                        btn.innerHTML = "🔍 Cari Gambar Otomatis";
+                        btn.disabled = false;
+                    };
+                    reader.readAsDataURL(blob);
+
+                } else {
+                    alert(`❌ Gambar untuk topik "${keyword}" tidak ditemukan di database Pixabay. Cobalah unggah manual.`);
+                    btn.innerHTML = "🔍 Cari Gambar Otomatis";
                     btn.disabled = false;
-                };
-                reader.readAsDataURL(blob);
-
+                }
             } catch (error) {
-                btn.innerHTML = "✨ Coba Lagi";
+                btn.innerHTML = "🔍 Cari Gambar Otomatis";
                 btn.disabled = false;
-                if (error.name === 'AbortError') { alert("⏱️ Waktu Habis! Server gratis sedang padat. Silakan klik 'Coba Lagi' sebentar lagi."); } 
-                else { alert("❌ Gagal terhubung. Pastikan internet Anda jalan, atau coba lagi nanti."); }
+                alert("❌ Gagal terhubung ke server pencari gambar. Pastikan internet Anda jalan.");
             }
         };
 
@@ -442,14 +462,15 @@
                 hasilGenerate.forEach((it, i) => {
                     h += `<div class="p-5 bg-gray-50 rounded-xl border relative"><div class="mb-3"><span class="bg-blue-100 text-blue-800 text-[10px] font-black px-2 py-1 rounded tracking-wider uppercase">${it.tipe}</span></div><p class="text-lg text-gray-800" dir="ltr"><strong>${i+1}. </strong> ${wrapArabic(it.soal)}</p>`;
                     
+                    // TOMBOL CARI GAMBAR (PIXABAY)
                     h += `<div>
                             <img id="img-preview-${i}" src="${it.manualImg || ''}" class="img-preview" style="display: ${it.manualImg ? 'block' : 'none'}">
                             <div class="flex gap-2 mt-3 max-w-[320px]">
                                 <div id="box-upload-${i}" class="flex-1 p-2 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-200 text-xs font-bold text-gray-600 transition" onclick="triggerUpload(${i})">
-                                    ${it.manualImg ? '📁 Ganti Gambar' : '📁 Upload Manual'}
+                                    ${it.manualImg ? '📁 Ganti Manual' : '📁 Upload Manual'}
                                 </div>
                                 <button id="btn-ai-img-${i}" onclick="buatGambarAI(${i})" class="flex-1 p-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow transition transform active:scale-95">
-                                    ✨ Generate AI
+                                    🔍 Cari Gambar Otomatis
                                 </button>
                             </div>
                             <input type="file" id="file-${i}" class="hidden" accept="image/*" onchange="uploadGambar(${i}, this)">
