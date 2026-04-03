@@ -10,6 +10,8 @@
         .font-arab { font-family: 'Arabic Typesetting', 'Traditional Arabic', serif; font-size: 1.7rem; line-height: 1.6; color: #1e3a8a; padding: 0 4px; }
         #modalKuis .font-arab { font-size: 1.6em; line-height: 1.4; }
         .fade-out { opacity: 0; visibility: hidden; transition: opacity 0.8s ease-out, visibility 0.8s; }
+        .img-upload-box { border: 2px dashed #cbd5e1; background-color: #f8fafc; border-radius: 0.5rem; text-align: center; padding: 1rem; cursor: pointer; transition: all 0.2s; max-width: 300px; margin-top: 10px; }
+        .img-upload-box:hover { border-color: #3b82f6; background-color: #eff6ff; }
         .img-preview { max-width: 300px; max-height: 200px; border-radius: 0.5rem; border: 1px solid #e2e8f0; object-fit: contain; display: none; margin-top: 10px; }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -37,39 +39,8 @@
                         <select id="selectModel" class="w-full border rounded-lg p-3 outline-none bg-white">
                             <optgroup label="Daftar Model Lengkap">
                                 <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-                                <option value="gemini-2.5-pro">gemini-2.5-pro</option>
                                 <option value="gemini-2.0-flash">gemini-2.0-flash</option>
-                                <option value="gemini-2.0-flash-001">gemini-2.0-flash-001</option>
-                                <option value="gemini-2.0-flash-lite-001">gemini-2.0-flash-lite-001</option>
-                                <option value="gemini-2.0-flash-lite">gemini-2.0-flash-lite</option>
-                                <option value="gemini-2.5-flash-preview-tts">gemini-2.5-flash-preview-tts</option>
-                                <option value="gemini-2.5-pro-preview-tts">gemini-2.5-pro-preview-tts</option>
-                                <option value="gemma-3-1b-it">gemma-3-1b-it</option>
-                                <option value="gemma-3-4b-it">gemma-3-4b-it</option>
-                                <option value="gemma-3-12b-it">gemma-3-12b-it</option>
-                                <option value="gemma-3-27b-it">gemma-3-27b-it</option>
-                                <option value="gemma-3n-e4b-it">gemma-3n-e4b-it</option>
-                                <option value="gemma-3n-e2b-it">gemma-3n-e2b-it</option>
-                                <option value="gemma-4-26b-a4b-it">gemma-4-26b-a4b-it</option>
-                                <option value="gemma-4-31b-it">gemma-4-31b-it</option>
-                                <option value="gemini-flash-latest">gemini-flash-latest</option>
-                                <option value="gemini-flash-lite-latest">gemini-flash-lite-latest</option>
-                                <option value="gemini-pro-latest">gemini-pro-latest</option>
-                                <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
-                                <option value="gemini-2.5-flash-image">gemini-2.5-flash-image</option>
-                                <option value="gemini-3-pro-preview">gemini-3-pro-preview</option>
                                 <option value="gemini-3-flash-preview" selected>gemini-3-flash-preview (Direkomendasikan)</option>
-                                <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview</option>
-                                <option value="gemini-3.1-pro-preview-customtools">gemini-3.1-pro-preview-customtools</option>
-                                <option value="gemini-3.1-flash-lite-preview">gemini-3.1-flash-lite-preview</option>
-                                <option value="gemini-3-pro-image-preview">gemini-3-pro-image-preview</option>
-                                <option value="nano-banana-pro-preview">nano-banana-pro-preview</option>
-                                <option value="gemini-3.1-flash-image-preview">gemini-3.1-flash-image-preview</option>
-                                <option value="lyria-3-clip-preview">lyria-3-clip-preview</option>
-                                <option value="lyria-3-pro-preview">lyria-3-pro-preview</option>
-                                <option value="gemini-robotics-er-1.5-preview">gemini-robotics-er-1.5-preview</option>
-                                <option value="gemini-2.5-computer-use-preview-10-2025">gemini-2.5-computer-use-preview-10-2025</option>
-                                <option value="deep-research-pro-preview-12-2025">deep-research-pro-preview-12-2025</option>
                             </optgroup>
                             <optgroup label="Lainnya">
                                 <option value="custom">-- Ketik Model Manual --</option>
@@ -79,11 +50,20 @@
                     <div id="wrapperModelManual" class="hidden">
                         <input type="text" id="inputModelManual" placeholder="misal: gemini-4.0" class="w-full border rounded-lg p-3">
                     </div>
-                    <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl">
-                        <label class="block text-sm font-bold text-purple-900 mb-1">Pixabay API Key (Pencari Gambar)</label>
-                        <p class="text-xs text-purple-700 mb-2">Dapatkan gratis di <a href="https://pixabay.com/api/docs/" target="_blank" class="font-bold underline">pixabay.com/api/docs</a></p>
-                        <input type="password" id="inputPixabayKey" placeholder="Paste kode API Pixabay..." class="w-full border rounded-lg p-3 outline-none text-sm">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl">
+                            <label class="block text-sm font-bold text-purple-900 mb-1">Pixabay API Key</label>
+                            <p class="text-[10px] text-purple-700 mb-2"><a href="https://pixabay.com/api/docs/" target="_blank" class="underline">Daftar di sini</a></p>
+                            <input type="password" id="inputPixabayKey" placeholder="Mesin Utama..." class="w-full border rounded p-2 outline-none text-sm">
+                        </div>
+                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                            <label class="block text-sm font-bold text-blue-900 mb-1">Pexels API Key</label>
+                            <p class="text-[10px] text-blue-700 mb-2"><a href="https://www.pexels.com/api/" target="_blank" class="underline">Daftar di sini</a></p>
+                            <input type="password" id="inputPexelsKey" placeholder="Mesin Cadangan..." class="w-full border rounded p-2 outline-none text-sm">
+                        </div>
                     </div>
+
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">URL Web App Google Sheets</label>
                         <input type="text" id="inputSheetsUrl" placeholder="https://script.google.com/macros/s/..." class="w-full border rounded-lg p-3 outline-none text-sm font-mono text-blue-600">
@@ -116,10 +96,10 @@
                 <div class="mb-8">
                     <h2 class="text-lg font-bold text-gray-800 border-l-4 border-blue-600 pl-3 mb-4">A. Identitas Ujian & Materi</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-5 rounded-xl border border-gray-200">
-                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Satuan Pendidikan</label><input type="text" id="inputSekolah" value="SDIT Qurratu A’yun Al-Islami" class="w-full border rounded p-2 text-sm focus:border-blue-500 outline-none"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Satuan Pendidikan</label><input type="text" id="inputSekolah" class="w-full border rounded p-2 text-sm focus:border-blue-500 outline-none"></div>
                         <div><label class="block text-xs font-bold text-gray-500 mb-1">Nama Guru</label><input type="text" id="inputGuru" placeholder="Nama Guru" class="w-full border rounded p-2 text-sm focus:border-blue-500 outline-none"></div>
                         <div><label class="block text-xs font-bold text-gray-500 mb-1">Fase / Kelas</label><input type="text" id="inputKelas" placeholder="Kelas 5" class="w-full border rounded p-2 text-sm focus:border-blue-500 outline-none"></div>
-                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Mata Pelajaran</label><input type="text" id="inputMapel" value="Bahasa Arab" class="w-full border rounded p-2 text-sm font-bold text-blue-700 focus:border-blue-500 outline-none"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Mata Pelajaran</label><input type="text" id="inputMapel" class="w-full border rounded p-2 text-sm font-bold text-blue-700 focus:border-blue-500 outline-none"></div>
                         <div><label class="block text-xs font-bold text-gray-500 mb-1">Hari & Tanggal</label><input type="date" id="inputTanggal" class="w-full border rounded p-2 text-sm text-gray-700 focus:border-blue-500 outline-none"></div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-bold text-gray-500 mb-1">Topik / Lingkup Materi</label>
@@ -155,9 +135,9 @@
                             <div id="wrapperOpsiPG">
                                 <label class="block text-xs font-bold text-gray-700 mb-1">Jumlah Opsi (Khusus PG)</label>
                                 <select id="modOpsi" class="w-full border rounded p-2 text-sm bg-white">
-                                    <option value="3">3 Opsi (A, B, C)</option>
-                                    <option value="4" selected>4 Opsi (A, B, C, D)</option>
-                                    <option value="5">5 Opsi (A, B, C, D, E)</option>
+                                    <option value="3">3 Opsi</option>
+                                    <option value="4" selected>4 Opsi</option>
+                                    <option value="5">5 Opsi</option>
                                 </select>
                             </div>
                         </div>
@@ -195,11 +175,11 @@
                         <input type="checkbox" id="toggleAutoImage" class="w-5 h-5 text-purple-600 rounded focus:ring-purple-500">
                         <div>
                             <span class="block font-bold text-purple-900 text-sm">Mode Soal Bergambar</span>
-                            <span class="block text-xs text-purple-700">Otomatis mencari gambar untuk semua soal</span>
+                            <span class="block text-xs text-purple-700">Otomatis mencari dengan Mesin Ganda</span>
                         </div>
                     </label>
                     <div class="flex items-center gap-3 w-full md:w-auto">
-                        <button type="button" id="btnResetAll" class="text-red-500 hover:text-red-700 font-bold px-4 py-2 transition border border-red-200 rounded-lg hover:bg-red-50 w-full md:w-auto text-center">🗑️ Reset Semua</button>
+                        <button type="button" id="btnResetAll" class="text-red-500 hover:text-red-700 font-bold px-4 py-2 transition border border-red-200 rounded-lg hover:bg-red-50 w-full md:w-auto">🗑️ Reset Semua</button>
                         <button type="button" id="btnGenerateAI" class="bg-blue-600 hover:bg-blue-800 text-white font-black py-4 px-8 rounded-xl shadow-xl transition transform active:scale-95 text-lg w-full md:w-auto" disabled>MULAI GENERATE SOAL ✨</button>
                     </div>
                 </div>
@@ -228,9 +208,6 @@
             </div>
 
             <div id="view-info" class="view-section hidden bg-white p-6 md:p-8 rounded-b-2xl shadow-md border border-t-0 border-gray-200">
-                <div class="border-b-2 border-dashed border-gray-200 pb-6 mb-6">
-                    <h2 class="text-3xl font-black text-blue-900 mb-2">📚 Panduan Resmi Soalku Web</h2>
-                </div>
                 <div class="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <div class="h-10 w-10 bg-blue-900 rounded-full flex items-center justify-center text-white font-black text-xl shadow-lg">IH</div>
@@ -269,6 +246,7 @@
         let savedModel = localStorage.getItem('soalku_aiModel') || "gemini-3-flash-preview";
         let savedSheetsUrl = localStorage.getItem('soalku_sheetsUrl') || ""; 
         let savedPixabayKey = localStorage.getItem('soalku_pixabayKey') || ""; 
+        let savedPexelsKey = localStorage.getItem('soalku_pexelsKey') || ""; 
         
         let strukturSoal = []; let hasilGenerate = []; let kuisTimeout;
 
@@ -278,36 +256,24 @@
             try { return new Date(dateVal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); } catch(e) { return dateVal; }
         }
 
-        // ================= AUTO SAVE IDENTITAS & TOGGLE =================
+        // ================= AUTO SAVE & TOGGLE =================
         const idInputs = ['inputSekolah', 'inputGuru', 'inputKelas', 'inputMapel'];
         function muatIdentitas() {
-            idInputs.forEach(id => {
-                const saved = localStorage.getItem('soalku_' + id);
-                if(saved !== null) document.getElementById(id).value = saved;
-            });
-            const savedToggle = localStorage.getItem('soalku_autoImg');
-            if (savedToggle !== null) document.getElementById('toggleAutoImage').checked = (savedToggle === 'true');
+            idInputs.forEach(id => { const saved = localStorage.getItem('soalku_' + id); if(saved !== null) document.getElementById(id).value = saved; });
+            const savedToggle = localStorage.getItem('soalku_autoImg'); if (savedToggle !== null) document.getElementById('toggleAutoImage').checked = (savedToggle === 'true');
         }
-        
-        idInputs.forEach(id => {
-            document.getElementById(id).addEventListener('input', (e) => {
-                localStorage.setItem('soalku_' + id, e.target.value);
-            });
-        });
-        
-        document.getElementById('toggleAutoImage').addEventListener('change', (e) => {
-            localStorage.setItem('soalku_autoImg', e.target.checked);
-        });
+        idInputs.forEach(id => { document.getElementById(id).addEventListener('input', (e) => { localStorage.setItem('soalku_' + id, e.target.value); }); });
+        document.getElementById('toggleAutoImage').addEventListener('change', (e) => { localStorage.setItem('soalku_autoImg', e.target.checked); });
 
         // ================= WEB BOOT =================
         document.addEventListener('DOMContentLoaded', () => {
-            muatIdentitas(); // Muat data tersimpan
+            muatIdentitas();
             document.getElementById('appUtama').classList.remove('hidden');
             setTimeout(() => { document.getElementById('splashScreen').classList.add('fade-out'); if(!savedApiKey) setTimeout(() => bukaPengaturan(false), 800); }, 2000);
             renderTabelStruktur();
         });
 
-        // ================= UI & NAVIGATION =================
+        // ================= UI & SETTING =================
         document.querySelectorAll('.nav-main-btn').forEach(btn => {
             btn.onclick = (e) => {
                 document.querySelectorAll('.nav-main-btn').forEach(x => { x.classList.remove('border-blue-600', 'text-blue-700'); x.classList.add('border-transparent', 'text-gray-500'); });
@@ -320,9 +286,8 @@
         document.getElementById('selectModel').onchange = (e) => document.getElementById('wrapperModelManual').classList.toggle('hidden', e.target.value !== 'custom');
         
         function bukaPengaturan(bisaBatal = true) {
-            document.getElementById('inputApiKey').value = savedApiKey; 
-            document.getElementById('inputSheetsUrl').value = savedSheetsUrl;
-            document.getElementById('inputPixabayKey').value = savedPixabayKey;
+            document.getElementById('inputApiKey').value = savedApiKey; document.getElementById('inputSheetsUrl').value = savedSheetsUrl;
+            document.getElementById('inputPixabayKey').value = savedPixabayKey; document.getElementById('inputPexelsKey').value = savedPexelsKey;
             
             let found = false; for(let opt of document.getElementById('selectModel').options) { if(opt.value === savedModel) { document.getElementById('selectModel').value = savedModel; found = true; break; } }
             if(!found && savedModel) { document.getElementById('selectModel').value = 'custom'; document.getElementById('wrapperModelManual').classList.remove('hidden'); document.getElementById('inputModelManual').value = savedModel; }
@@ -331,17 +296,16 @@
         document.getElementById('btnBukaPengaturan').onclick = () => bukaPengaturan(true);
         document.getElementById('btnTutupPengaturan').onclick = () => { modalPengaturan.classList.remove('flex'); modalPengaturan.classList.add('hidden'); };
         document.getElementById('btnSimpanPengaturan').onclick = () => {
-            const key = document.getElementById('inputApiKey').value.trim(); 
-            let mdl = document.getElementById('selectModel').value; if(mdl === 'custom') mdl = document.getElementById('inputModelManual').value.trim() || "gemini-3-flash-preview";
-            const pxb = document.getElementById('inputPixabayKey').value.trim();
-            
+            const key = document.getElementById('inputApiKey').value.trim(); let mdl = document.getElementById('selectModel').value; if(mdl === 'custom') mdl = document.getElementById('inputModelManual').value.trim() || "gemini-3-flash-preview";
+            const pxb = document.getElementById('inputPixabayKey').value.trim(); const pxls = document.getElementById('inputPexelsKey').value.trim();
             if(!key || !mdl) return alert("API Key wajib diisi!");
-            localStorage.setItem('soalku_apiKey', key); localStorage.setItem('soalku_aiModel', mdl); localStorage.setItem('soalku_sheetsUrl', document.getElementById('inputSheetsUrl').value.trim()); localStorage.setItem('soalku_pixabayKey', pxb);
-            savedApiKey = key; savedModel = mdl; savedSheetsUrl = localStorage.getItem('soalku_sheetsUrl'); savedPixabayKey = pxb;
+            localStorage.setItem('soalku_apiKey', key); localStorage.setItem('soalku_aiModel', mdl); localStorage.setItem('soalku_sheetsUrl', document.getElementById('inputSheetsUrl').value.trim());
+            localStorage.setItem('soalku_pixabayKey', pxb); localStorage.setItem('soalku_pexelsKey', pxls);
+            savedApiKey = key; savedModel = mdl; savedSheetsUrl = localStorage.getItem('soalku_sheetsUrl'); savedPixabayKey = pxb; savedPexelsKey = pxls;
             modalPengaturan.classList.remove('flex'); modalPengaturan.classList.add('hidden');
         };
 
-        // ================= BUILDER LOGIC =================
+        // ================= BUILDER =================
         document.getElementById('modTipe').onchange = (e) => { document.getElementById('wrapperOpsiPG').style.display = e.target.value.includes("Pilihan Ganda") || e.target.value === "PG Kompleks" ? 'block' : 'none'; };
         function renderTabelStruktur() {
             const tbody = document.getElementById('tabelStruktur');
@@ -357,34 +321,43 @@
             if(jumlah < 1 || isNaN(jumlah)) return alert("Jumlah minimal 1!"); if(!levels) return alert("Pilih minimal 1 Level Kognitif!");
             strukturSoal.push({ tipe, jumlah, sulit, level: levels, opsi: tipe.includes("PG") ? parseInt(opsi) : null }); renderTabelStruktur();
         };
-        
         document.getElementById('btnResetAll').onclick = () => { 
-            if(confirm("Yakin hapus semua struktur soal dan reset data identitas ujian?")) { 
-                strukturSoal = []; 
-                renderTabelStruktur(); 
-                
-                // Hapus memori identitas
-                idInputs.forEach(id => localStorage.removeItem('soalku_' + id));
-                localStorage.removeItem('soalku_autoImg');
-                
-                // Kembalikan ke nilai awal
-                document.getElementById('inputSekolah').value = "SDIT Qurratu A’yun Al-Islami";
-                document.getElementById('inputGuru').value = "";
-                document.getElementById('inputKelas').value = "";
-                document.getElementById('inputMapel').value = "Bahasa Arab";
-                document.getElementById('inputTopik').value = "";
-                document.getElementById('inputTanggal').value = "";
-                document.getElementById('toggleAutoImage').checked = false;
+            if(confirm("Yakin hapus semua pengaturan struktur dan reset identitas?")) { 
+                strukturSoal = []; renderTabelStruktur(); 
+                idInputs.forEach(id => localStorage.removeItem('soalku_' + id)); localStorage.removeItem('soalku_autoImg');
+                document.getElementById('inputSekolah').value = "SDIT Qurratu A’yun Al-Islami"; document.getElementById('inputGuru').value = ""; document.getElementById('inputKelas').value = ""; document.getElementById('inputMapel').value = "Bahasa Arab"; document.getElementById('inputTopik').value = ""; document.getElementById('inputTanggal').value = ""; document.getElementById('toggleAutoImage').checked = false;
             } 
         };
 
-        // ================= GEMINI AI LOGIC (ANTI MACET) =================
+        // ================= DUAL ENGINE FETCH LOGIC =================
+        async function fetchDualEngine(keyword) {
+            let urls = [];
+            // 1. Try Pixabay
+            if (savedPixabayKey) {
+                try {
+                    const res = await fetch(`https://pixabay.com/api/?key=${savedPixabayKey}&q=${encodeURIComponent(keyword)}&image_type=illustration&per_page=5&safesearch=true`);
+                    const data = await res.json();
+                    if (data.hits) data.hits.forEach(h => urls.push(h.webformatURL));
+                } catch(e) { console.log("Pixabay fail"); }
+            }
+            // 2. Try Pexels if Pixabay returns nothing
+            if (savedPexelsKey && urls.length === 0) {
+                try {
+                    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(keyword)}&per_page=5`, { headers: { Authorization: savedPexelsKey }});
+                    const data = await res.json();
+                    if (data.photos) data.photos.forEach(p => urls.push(p.src.medium));
+                } catch(e) { console.log("Pexels fail"); }
+            }
+            return urls;
+        }
+
+        // ================= GEMINI AI & AUTO-GAMBAR (DUAL ENGINE) =================
         document.getElementById('btnGenerateAI').onclick = async () => {
             if(!savedApiKey) { alert("⚠️ API Key belum disetel!"); return bukaPengaturan(false); }
             
             const isAutoImage = document.getElementById('toggleAutoImage').checked;
-            if(isAutoImage && !savedPixabayKey) {
-                alert("⚠️ Pixabay API Key belum disetel! Harap masukkan di menu Setting untuk Mode Bergambar otomatis.");
+            if(isAutoImage && !savedPixabayKey && !savedPexelsKey) {
+                alert("⚠️ Anda belum memasukkan kunci untuk Mesin Pencari Gambar di Setting!");
                 return bukaPengaturan(true);
             }
 
@@ -405,7 +378,7 @@
                 1. Jika ada teks Arab, WAJIB tulis dalam huruf Hijaiyah lengkap harakat.
                 2. Balas HANYA dengan 1 JSON Array murni yang berisi seluruh soal secara berurutan.
                 3. Struktur objek JSON wajib seperti ini:
-                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2", "keyword_gambar": "1-2 kata kunci bahasa Inggris yang paling mewakili visual soal ini untuk pencarian gambar"}]
+                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2", "keyword_gambar": "1 atau 2 kata benda (noun) bahasa Inggris paling spesifik mewakili objek utama di soal (contoh: 'mosque', 'apple', 'student studying')"}]
                 Catatan: Field "opsi" wajib array string (kosongkan [] jika tipe Uraian/Isian).`;
 
                 const res = await Promise.race([
@@ -418,21 +391,18 @@
                 
                 hasilGenerate = JSON.parse(jsonText);
                 
-                // Jika Mode Gambar Otomatis Menyala
                 if (isAutoImage) {
                     btn.innerHTML = "MEMUAT GAMBAR ILUSTRASI... ⏳";
                     for (let i = 0; i < hasilGenerate.length; i++) {
                         let it = hasilGenerate[i];
-                        it.manualImg = null; it.pixabayHits = []; it.currentHitIndex = -1;
+                        it.manualImg = null; it.imagePool = []; it.currentImgIdx = -1;
                         const keyword = it.keyword_gambar || "education";
-                        const url = `https://pixabay.com/api/?key=${savedPixabayKey}&q=${encodeURIComponent(keyword)}&image_type=illustration&per_page=5&safesearch=true`;
-                        try {
-                            const pxbRes = await fetch(url);
-                            const pxbData = await pxbRes.json();
-                            if (pxbData.hits && pxbData.hits.length > 0) {
-                                it.pixabayHits = pxbData.hits;
-                                it.currentHitIndex = 0;
-                                const imgRes = await fetch(pxbData.hits[0].webformatURL);
+                        
+                        it.imagePool = await fetchDualEngine(keyword);
+                        if (it.imagePool.length > 0) {
+                            it.currentImgIdx = 0;
+                            try {
+                                const imgRes = await fetch(it.imagePool[0]);
                                 const blob = await imgRes.blob();
                                 const base64data = await new Promise((resolve) => {
                                     const reader = new FileReader();
@@ -440,27 +410,23 @@
                                     reader.readAsDataURL(blob);
                                 });
                                 it.manualImg = base64data;
-                            }
-                        } catch (e) { console.error("Gagal gambar", e); }
+                            } catch(e) { console.error("Gagal base64", e); }
+                        }
                     }
                 } else {
-                    // Mode biasa
-                    hasilGenerate.forEach(it => { it.manualImg = null; it.pixabayHits = []; it.currentHitIndex = -1; });
+                    hasilGenerate.forEach(it => { it.manualImg = null; it.imagePool = []; it.currentImgIdx = -1; });
                 }
                 
-                document.querySelector('.nav-main-btn[data-target="view-laporan"]').click(); 
-                document.getElementById('pesanKosongLaporan').classList.add('hidden'); 
-                document.getElementById('areaHasil').classList.remove('hidden'); 
-                renderLaporan('soal');
+                document.querySelector('.nav-main-btn[data-target="view-laporan"]').click(); document.getElementById('pesanKosongLaporan').classList.add('hidden'); document.getElementById('areaHasil').classList.remove('hidden'); renderLaporan('soal');
             } catch (e) { 
                 console.error(e);
-                alert("❌ Gagal memproses soal!\n\nPenyebab mungkin:\n1. Internet lambat (Timeout).\n2. API Key salah.\n3. Model AI tidak merespons dengan format yang benar.\n\nSilakan coba klik tombol Generate lagi."); 
+                alert("❌ Gagal memproses soal!\n\nPenyebab mungkin:\n1. Internet lambat (Timeout).\n2. API Key salah.\n3. Model AI tidak merespons dengan format yang benar."); 
             } finally {
                 btn.innerHTML = "MULAI GENERATE SOAL AI ✨"; btn.disabled = false;
             }
         };
 
-        // ================= GAMBAR MANUAL & GANTI PIXABAY =================
+        // ================= GAMBAR MANUAL & GANTI (DUAL ENGINE) =================
         window.triggerUpload = (idx) => document.getElementById(`file-${idx}`).click();
         window.uploadGambar = (idx, input) => {
             if (input.files && input.files[0]) {
@@ -468,7 +434,7 @@
                 reader.onload = (e) => {
                     hasilGenerate[idx].manualImg = e.target.result;
                     document.getElementById(`img-preview-${idx}`).src = e.target.result; document.getElementById(`img-preview-${idx}`).style.display = 'block';
-                    document.getElementById(`btn-ai-img-${idx}`).innerHTML = "🔄 Ganti Gambar Otomatis";
+                    document.getElementById(`btn-ai-img-${idx}`).innerHTML = "🔄 Ganti (Mesin Ganda)";
                 };
                 reader.readAsDataURL(input.files[0]);
             }
@@ -476,27 +442,21 @@
 
         window.gantiAtauCariGambar = async (idx) => {
             const it = hasilGenerate[idx];
-            if(!savedPixabayKey) { alert("⚠️ Pixabay API Key belum disetel!"); return bukaPengaturan(true); }
+            if(!savedPixabayKey && !savedPexelsKey) { alert("⚠️ Anda belum memasukkan API Key untuk mesin pencari gambar (Pixabay atau Pexels) di Setting!"); return bukaPengaturan(true); }
 
             const btn = document.getElementById(`btn-ai-img-${idx}`);
-            btn.innerHTML = "⏳ Memproses..."; btn.disabled = true;
+            btn.innerHTML = "⏳ Mencari... (Dual Engine)"; btn.disabled = true;
 
             try {
-                // Jika belum punya cadangan gambar, cari dulu
-                if (!it.pixabayHits || it.pixabayHits.length === 0) {
+                if (!it.imagePool || it.imagePool.length === 0) {
                     const keyword = it.keyword_gambar || "education";
-                    const url = `https://pixabay.com/api/?key=${savedPixabayKey}&q=${encodeURIComponent(keyword)}&image_type=illustration&per_page=5&safesearch=true`;
-                    const res = await fetch(url);
-                    const data = await res.json();
-                    if (data.hits && data.hits.length > 0) {
-                        it.pixabayHits = data.hits;
-                        it.currentHitIndex = -1; 
-                    } else { throw new Error(`Gambar topik "${keyword}" tidak ditemukan.`); }
+                    it.imagePool = await fetchDualEngine(keyword);
+                    if (it.imagePool.length === 0) throw new Error(`Gambar topik "${keyword}" tidak ditemukan di kedua mesin.`);
+                    it.currentImgIdx = -1; 
                 }
                 
-                // Lanjut ke gambar berikutnya
-                it.currentHitIndex = (it.currentHitIndex + 1) % it.pixabayHits.length;
-                const newUrl = it.pixabayHits[it.currentHitIndex].webformatURL;
+                it.currentImgIdx = (it.currentImgIdx + 1) % it.imagePool.length;
+                const newUrl = it.imagePool[it.currentImgIdx];
                 
                 const imgRes = await fetch(newUrl);
                 const blob = await imgRes.blob();
@@ -505,14 +465,14 @@
                     it.manualImg = reader.result;
                     document.getElementById(`img-preview-${idx}`).src = reader.result;
                     document.getElementById(`img-preview-${idx}`).style.display = 'block';
-                    btn.innerHTML = "🔄 Ganti Gambar Otomatis";
+                    btn.innerHTML = "🔄 Ganti (Mesin Ganda)";
                     btn.disabled = false;
                 };
                 reader.readAsDataURL(blob);
 
             } catch (e) {
-                alert("❌ Gagal memuat gambar: " + e.message);
-                btn.innerHTML = it.manualImg ? "🔄 Ganti Gambar Otomatis" : "🔍 Cari Gambar Otomatis";
+                alert("❌ Gagal memuat: " + e.message);
+                btn.innerHTML = it.manualImg ? "🔄 Ganti (Mesin Ganda)" : "🔍 Cari Gambar Otomatis";
                 btn.disabled = false;
             }
         };
@@ -537,15 +497,15 @@
                 hasilGenerate.forEach((it, i) => {
                     h += `<div class="p-5 bg-gray-50 rounded-xl border relative"><div class="mb-3"><span class="bg-blue-100 text-blue-800 text-[10px] font-black px-2 py-1 rounded tracking-wider uppercase">${it.tipe}</span></div><p class="text-lg text-gray-800" dir="ltr"><strong>${i+1}. </strong> ${wrapArabic(it.soal)}</p>`;
                     
-                    // TOMBOL GANTI GAMBAR PIXABAY
+                    // TOMBOL SEARCH DUAL ENGINE
                     h += `<div>
                             <img id="img-preview-${i}" src="${it.manualImg || ''}" class="img-preview" style="display: ${it.manualImg ? 'block' : 'none'}">
                             <div class="flex gap-2 mt-3 max-w-[320px]">
                                 <div id="box-upload-${i}" class="flex-1 p-2 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-200 text-xs font-bold text-gray-600 transition" onclick="triggerUpload(${i})">
-                                    📁 Upload Manual
+                                    ${it.manualImg ? '📁 Ganti Manual' : '📁 Upload Manual'}
                                 </div>
                                 <button id="btn-ai-img-${i}" onclick="gantiAtauCariGambar(${i})" class="flex-1 p-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow transition transform active:scale-95">
-                                    ${it.manualImg ? '🔄 Ganti Gambar Otomatis' : '🔍 Cari Gambar Otomatis'}
+                                    ${it.manualImg ? '🔄 Ganti (Mesin Ganda)' : '🔍 Cari Gambar Otomatis'}
                                 </button>
                             </div>
                             <input type="file" id="file-${i}" class="hidden" accept="image/*" onchange="uploadGambar(${i}, this)">
