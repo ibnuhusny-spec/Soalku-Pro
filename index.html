@@ -10,8 +10,6 @@
         .font-arab { font-family: 'Arabic Typesetting', 'Traditional Arabic', serif; font-size: 1.7rem; line-height: 1.6; color: #1e3a8a; padding: 0 4px; }
         #modalKuis .font-arab { font-size: 1.6em; line-height: 1.4; }
         .fade-out { opacity: 0; visibility: hidden; transition: opacity 0.8s ease-out, visibility 0.8s; }
-        .img-upload-box { border: 2px dashed #cbd5e1; background-color: #f8fafc; border-radius: 0.5rem; text-align: center; padding: 1rem; cursor: pointer; transition: all 0.2s; max-width: 300px; margin-top: 10px; }
-        .img-upload-box:hover { border-color: #3b82f6; background-color: #eff6ff; }
         .img-preview { max-width: 300px; max-height: 200px; border-radius: 0.5rem; border: 1px solid #e2e8f0; object-fit: contain; display: none; margin-top: 10px; }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -118,11 +116,11 @@
                 <div class="mb-8">
                     <h2 class="text-lg font-bold text-gray-800 border-l-4 border-blue-600 pl-3 mb-4">A. Identitas Ujian & Materi</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-5 rounded-xl border border-gray-200">
-                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Satuan Pendidikan</label><input type="text" id="inputSekolah" value="SDIT Qurratu A’yun Al-Islami" class="w-full border rounded p-2 text-sm"></div>
-                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Nama Guru</label><input type="text" id="inputGuru" placeholder="Nama Guru" class="w-full border rounded p-2 text-sm"></div>
-                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Fase / Kelas</label><input type="text" id="inputKelas" placeholder="Kelas 5" class="w-full border rounded p-2 text-sm"></div>
-                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Mata Pelajaran</label><input type="text" id="inputMapel" value="Bahasa Arab" class="w-full border rounded p-2 text-sm font-bold text-blue-700"></div>
-                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Hari & Tanggal</label><input type="date" id="inputTanggal" class="w-full border rounded p-2 text-sm text-gray-700"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Satuan Pendidikan</label><input type="text" id="inputSekolah" value="SDIT Qurratu A’yun Al-Islami" class="w-full border rounded p-2 text-sm focus:border-blue-500 outline-none"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Nama Guru</label><input type="text" id="inputGuru" placeholder="Nama Guru" class="w-full border rounded p-2 text-sm focus:border-blue-500 outline-none"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Fase / Kelas</label><input type="text" id="inputKelas" placeholder="Kelas 5" class="w-full border rounded p-2 text-sm focus:border-blue-500 outline-none"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Mata Pelajaran</label><input type="text" id="inputMapel" value="Bahasa Arab" class="w-full border rounded p-2 text-sm font-bold text-blue-700 focus:border-blue-500 outline-none"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Hari & Tanggal</label><input type="date" id="inputTanggal" class="w-full border rounded p-2 text-sm text-gray-700 focus:border-blue-500 outline-none"></div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-bold text-gray-500 mb-1">Topik / Lingkup Materi</label>
                             <textarea id="inputTopik" rows="2" placeholder="Contoh: Kosakata Ruang Kelas..." class="w-full border-2 border-blue-200 rounded p-2 text-sm font-bold focus:border-blue-500 outline-none resize-y"></textarea>
@@ -192,9 +190,18 @@
                     </div>
                 </div>
 
-                <div class="flex justify-between items-center border-t pt-6">
-                    <button type="button" id="btnResetAll" class="text-red-500 hover:text-red-700 font-bold px-4 py-2 transition">🗑️ Reset Semua</button>
-                    <button type="button" id="btnGenerateAI" class="bg-blue-600 hover:bg-blue-800 text-white font-black py-4 px-10 rounded-xl shadow-xl transition transform active:scale-95 text-lg" disabled>MULAI GENERATE SOAL AI ✨</button>
+                <div class="flex flex-col md:flex-row justify-between items-center border-t pt-6 gap-4">
+                    <label class="flex items-center gap-3 bg-purple-50 px-4 py-3 rounded-xl border border-purple-200 cursor-pointer hover:bg-purple-100 transition w-full md:w-auto">
+                        <input type="checkbox" id="toggleAutoImage" class="w-5 h-5 text-purple-600 rounded focus:ring-purple-500">
+                        <div>
+                            <span class="block font-bold text-purple-900 text-sm">Mode Soal Bergambar</span>
+                            <span class="block text-xs text-purple-700">Otomatis mencari gambar untuk semua soal</span>
+                        </div>
+                    </label>
+                    <div class="flex items-center gap-3 w-full md:w-auto">
+                        <button type="button" id="btnResetAll" class="text-red-500 hover:text-red-700 font-bold px-4 py-2 transition border border-red-200 rounded-lg hover:bg-red-50 w-full md:w-auto text-center">🗑️ Reset Semua</button>
+                        <button type="button" id="btnGenerateAI" class="bg-blue-600 hover:bg-blue-800 text-white font-black py-4 px-8 rounded-xl shadow-xl transition transform active:scale-95 text-lg w-full md:w-auto" disabled>MULAI GENERATE SOAL ✨</button>
+                    </div>
                 </div>
             </div>
 
@@ -204,7 +211,7 @@
                     <p class="text-lg">Belum ada hasil soal.</p>
                 </div>
                 <div id="areaHasil" class="hidden">
-                    <div class="bg-gray-50 p-4 rounded-xl border flex flex-col md:flex-row justify-between gap-4 mb-6">
+                    <div class="bg-gray-50 p-4 rounded-xl border flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                         <div class="flex bg-white rounded-lg p-1 shadow-sm border w-full md:w-auto">
                             <button class="tab-hasil flex-1 md:flex-none px-4 py-2 text-sm font-bold border-b-2 border-blue-600 text-blue-600" data-target="soal">NASKAH</button>
                             <button class="tab-hasil flex-1 md:flex-none px-4 py-2 text-sm font-bold text-gray-400" data-target="kunci">KUNCI (TABEL)</button>
@@ -271,8 +278,30 @@
             try { return new Date(dateVal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); } catch(e) { return dateVal; }
         }
 
+        // ================= AUTO SAVE IDENTITAS & TOGGLE =================
+        const idInputs = ['inputSekolah', 'inputGuru', 'inputKelas', 'inputMapel'];
+        function muatIdentitas() {
+            idInputs.forEach(id => {
+                const saved = localStorage.getItem('soalku_' + id);
+                if(saved !== null) document.getElementById(id).value = saved;
+            });
+            const savedToggle = localStorage.getItem('soalku_autoImg');
+            if (savedToggle !== null) document.getElementById('toggleAutoImage').checked = (savedToggle === 'true');
+        }
+        
+        idInputs.forEach(id => {
+            document.getElementById(id).addEventListener('input', (e) => {
+                localStorage.setItem('soalku_' + id, e.target.value);
+            });
+        });
+        
+        document.getElementById('toggleAutoImage').addEventListener('change', (e) => {
+            localStorage.setItem('soalku_autoImg', e.target.checked);
+        });
+
         // ================= WEB BOOT =================
         document.addEventListener('DOMContentLoaded', () => {
+            muatIdentitas(); // Muat data tersimpan
             document.getElementById('appUtama').classList.remove('hidden');
             setTimeout(() => { document.getElementById('splashScreen').classList.add('fade-out'); if(!savedApiKey) setTimeout(() => bukaPengaturan(false), 800); }, 2000);
             renderTabelStruktur();
@@ -328,19 +357,42 @@
             if(jumlah < 1 || isNaN(jumlah)) return alert("Jumlah minimal 1!"); if(!levels) return alert("Pilih minimal 1 Level Kognitif!");
             strukturSoal.push({ tipe, jumlah, sulit, level: levels, opsi: tipe.includes("PG") ? parseInt(opsi) : null }); renderTabelStruktur();
         };
-        document.getElementById('btnResetAll').onclick = () => { if(confirm("Yakin hapus semua pengaturan struktur?")) { strukturSoal = []; renderTabelStruktur(); } };
+        
+        document.getElementById('btnResetAll').onclick = () => { 
+            if(confirm("Yakin hapus semua struktur soal dan reset data identitas ujian?")) { 
+                strukturSoal = []; 
+                renderTabelStruktur(); 
+                
+                // Hapus memori identitas
+                idInputs.forEach(id => localStorage.removeItem('soalku_' + id));
+                localStorage.removeItem('soalku_autoImg');
+                
+                // Kembalikan ke nilai awal
+                document.getElementById('inputSekolah').value = "SDIT Qurratu A’yun Al-Islami";
+                document.getElementById('inputGuru').value = "";
+                document.getElementById('inputKelas').value = "";
+                document.getElementById('inputMapel').value = "Bahasa Arab";
+                document.getElementById('inputTopik').value = "";
+                document.getElementById('inputTanggal').value = "";
+                document.getElementById('toggleAutoImage').checked = false;
+            } 
+        };
 
-        // ================= GEMINI AI LOGIC (DENGAN KEYWORD MAKER) =================
+        // ================= GEMINI AI LOGIC (ANTI MACET) =================
         document.getElementById('btnGenerateAI').onclick = async () => {
-            if(!savedApiKey) {
-                alert("⚠️ API Key belum disetel! Harap masukkan API Key di menu Setting.");
-                return bukaPengaturan(false);
+            if(!savedApiKey) { alert("⚠️ API Key belum disetel!"); return bukaPengaturan(false); }
+            
+            const isAutoImage = document.getElementById('toggleAutoImage').checked;
+            if(isAutoImage && !savedPixabayKey) {
+                alert("⚠️ Pixabay API Key belum disetel! Harap masukkan di menu Setting untuk Mode Bergambar otomatis.");
+                return bukaPengaturan(true);
             }
+
             const mapel = document.getElementById('inputMapel').value; const topik = document.getElementById('inputTopik').value; const kelas = document.getElementById('inputKelas').value;
             if(!topik) return alert("Topik Materi belum diisi!");
             
             const btn = document.getElementById('btnGenerateAI'); 
-            btn.innerHTML = "MEMPROSES MULTI-MODUL AI... ⏳ (15-30 detik)"; btn.disabled = true;
+            btn.innerHTML = "MEMPROSES MULTI-MODUL AI... ⏳ (15-30 dtk)"; btn.disabled = true;
             
             try {
                 const genAI = new GoogleGenerativeAI(savedApiKey); const model = genAI.getGenerativeModel({ model: savedModel });
@@ -353,7 +405,8 @@
                 1. Jika ada teks Arab, WAJIB tulis dalam huruf Hijaiyah lengkap harakat.
                 2. Balas HANYA dengan 1 JSON Array murni yang berisi seluruh soal secara berurutan.
                 3. Struktur objek JSON wajib seperti ini:
-                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2", "keyword_gambar": "1-2 kata kunci bahasa Inggris yang paling mewakili visual soal ini untuk pencarian gambar"}]`;
+                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2", "keyword_gambar": "1-2 kata kunci bahasa Inggris yang paling mewakili visual soal ini untuk pencarian gambar"}]
+                Catatan: Field "opsi" wajib array string (kosongkan [] jika tipe Uraian/Isian).`;
 
                 const res = await Promise.race([
                     model.generateContent(prompt),
@@ -364,7 +417,36 @@
                 const jsonText = txtResponse.replace(/```json/gi, "").replace(/```/g, "").trim();
                 
                 hasilGenerate = JSON.parse(jsonText);
-                hasilGenerate.forEach(it => it.manualImg = null);
+                
+                // Jika Mode Gambar Otomatis Menyala
+                if (isAutoImage) {
+                    btn.innerHTML = "MEMUAT GAMBAR ILUSTRASI... ⏳";
+                    for (let i = 0; i < hasilGenerate.length; i++) {
+                        let it = hasilGenerate[i];
+                        it.manualImg = null; it.pixabayHits = []; it.currentHitIndex = -1;
+                        const keyword = it.keyword_gambar || "education";
+                        const url = `https://pixabay.com/api/?key=${savedPixabayKey}&q=${encodeURIComponent(keyword)}&image_type=illustration&per_page=5&safesearch=true`;
+                        try {
+                            const pxbRes = await fetch(url);
+                            const pxbData = await pxbRes.json();
+                            if (pxbData.hits && pxbData.hits.length > 0) {
+                                it.pixabayHits = pxbData.hits;
+                                it.currentHitIndex = 0;
+                                const imgRes = await fetch(pxbData.hits[0].webformatURL);
+                                const blob = await imgRes.blob();
+                                const base64data = await new Promise((resolve) => {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => resolve(reader.result);
+                                    reader.readAsDataURL(blob);
+                                });
+                                it.manualImg = base64data;
+                            }
+                        } catch (e) { console.error("Gagal gambar", e); }
+                    }
+                } else {
+                    // Mode biasa
+                    hasilGenerate.forEach(it => { it.manualImg = null; it.pixabayHits = []; it.currentHitIndex = -1; });
+                }
                 
                 document.querySelector('.nav-main-btn[data-target="view-laporan"]').click(); 
                 document.getElementById('pesanKosongLaporan').classList.add('hidden'); 
@@ -372,13 +454,13 @@
                 renderLaporan('soal');
             } catch (e) { 
                 console.error(e);
-                alert("❌ Gagal memproses soal!\n\nPenyebab mungkin:\n1. Internet lambat (Timeout).\n2. API Key salah.\n3. Model yang Anda pilih tidak mendukung fitur ini.\n\nSilakan coba lagi."); 
+                alert("❌ Gagal memproses soal!\n\nPenyebab mungkin:\n1. Internet lambat (Timeout).\n2. API Key salah.\n3. Model AI tidak merespons dengan format yang benar.\n\nSilakan coba klik tombol Generate lagi."); 
             } finally {
                 btn.innerHTML = "MULAI GENERATE SOAL AI ✨"; btn.disabled = false;
             }
         };
 
-        // ================= IMAGE SEARCH PIXABAY (OTOMATIS & CEPAT) =================
+        // ================= GAMBAR MANUAL & GANTI PIXABAY =================
         window.triggerUpload = (idx) => document.getElementById(`file-${idx}`).click();
         window.uploadGambar = (idx, input) => {
             if (input.files && input.files[0]) {
@@ -386,59 +468,52 @@
                 reader.onload = (e) => {
                     hasilGenerate[idx].manualImg = e.target.result;
                     document.getElementById(`img-preview-${idx}`).src = e.target.result; document.getElementById(`img-preview-${idx}`).style.display = 'block';
-                    document.getElementById(`box-upload-${idx}`).innerHTML = '📁 Ganti Gambar';
+                    document.getElementById(`btn-ai-img-${idx}`).innerHTML = "🔄 Ganti Gambar Otomatis";
                 };
                 reader.readAsDataURL(input.files[0]);
             }
         };
 
-        window.buatGambarAI = async (idx) => {
-            if(!savedPixabayKey) {
-                alert("⚠️ Pixabay API Key belum disetel!\nSilakan daftar gratis di pixabay.com/api/docs, lalu salin kuncinya dan masukkan ke menu ⚙️ Setting aplikasi ini.");
-                return bukaPengaturan(true);
-            }
+        window.gantiAtauCariGambar = async (idx) => {
+            const it = hasilGenerate[idx];
+            if(!savedPixabayKey) { alert("⚠️ Pixabay API Key belum disetel!"); return bukaPengaturan(true); }
 
             const btn = document.getElementById(`btn-ai-img-${idx}`);
-            btn.innerHTML = "⏳ Mencari... (1-2 dtk)";
-            btn.disabled = true;
+            btn.innerHTML = "⏳ Memproses..."; btn.disabled = true;
 
             try {
-                // Mengambil kata kunci Inggris yang sudah diracik cerdas oleh Gemini
-                const keyword = hasilGenerate[idx].keyword_gambar || "education";
-                const url = `https://pixabay.com/api/?key=${savedPixabayKey}&q=${encodeURIComponent(keyword)}&image_type=illustration&per_page=3&safesearch=true`;
-                
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (data.hits && data.hits.length > 0) {
-                    const imageUrl = data.hits[0].webformatURL;
-                    
-                    // Tarik gambar lalu convert ke Base64 agar aman saat di-download ke Word
-                    const imgResponse = await fetch(imageUrl);
-                    const blob = await imgResponse.blob();
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        const base64data = reader.result;
-                        hasilGenerate[idx].manualImg = base64data; 
-                        
-                        document.getElementById(`img-preview-${idx}`).src = base64data;
-                        document.getElementById(`img-preview-${idx}`).style.display = 'block';
-                        document.getElementById(`box-upload-${idx}`).innerHTML = '📁 Ganti Manual';
-                        
-                        btn.innerHTML = "🔍 Cari Gambar Otomatis";
-                        btn.disabled = false;
-                    };
-                    reader.readAsDataURL(blob);
-
-                } else {
-                    alert(`❌ Gambar untuk topik "${keyword}" tidak ditemukan di database Pixabay. Cobalah unggah manual.`);
-                    btn.innerHTML = "🔍 Cari Gambar Otomatis";
-                    btn.disabled = false;
+                // Jika belum punya cadangan gambar, cari dulu
+                if (!it.pixabayHits || it.pixabayHits.length === 0) {
+                    const keyword = it.keyword_gambar || "education";
+                    const url = `https://pixabay.com/api/?key=${savedPixabayKey}&q=${encodeURIComponent(keyword)}&image_type=illustration&per_page=5&safesearch=true`;
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    if (data.hits && data.hits.length > 0) {
+                        it.pixabayHits = data.hits;
+                        it.currentHitIndex = -1; 
+                    } else { throw new Error(`Gambar topik "${keyword}" tidak ditemukan.`); }
                 }
-            } catch (error) {
-                btn.innerHTML = "🔍 Cari Gambar Otomatis";
+                
+                // Lanjut ke gambar berikutnya
+                it.currentHitIndex = (it.currentHitIndex + 1) % it.pixabayHits.length;
+                const newUrl = it.pixabayHits[it.currentHitIndex].webformatURL;
+                
+                const imgRes = await fetch(newUrl);
+                const blob = await imgRes.blob();
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    it.manualImg = reader.result;
+                    document.getElementById(`img-preview-${idx}`).src = reader.result;
+                    document.getElementById(`img-preview-${idx}`).style.display = 'block';
+                    btn.innerHTML = "🔄 Ganti Gambar Otomatis";
+                    btn.disabled = false;
+                };
+                reader.readAsDataURL(blob);
+
+            } catch (e) {
+                alert("❌ Gagal memuat gambar: " + e.message);
+                btn.innerHTML = it.manualImg ? "🔄 Ganti Gambar Otomatis" : "🔍 Cari Gambar Otomatis";
                 btn.disabled = false;
-                alert("❌ Gagal terhubung ke server pencari gambar. Pastikan internet Anda jalan.");
             }
         };
 
@@ -462,15 +537,15 @@
                 hasilGenerate.forEach((it, i) => {
                     h += `<div class="p-5 bg-gray-50 rounded-xl border relative"><div class="mb-3"><span class="bg-blue-100 text-blue-800 text-[10px] font-black px-2 py-1 rounded tracking-wider uppercase">${it.tipe}</span></div><p class="text-lg text-gray-800" dir="ltr"><strong>${i+1}. </strong> ${wrapArabic(it.soal)}</p>`;
                     
-                    // TOMBOL CARI GAMBAR (PIXABAY)
+                    // TOMBOL GANTI GAMBAR PIXABAY
                     h += `<div>
                             <img id="img-preview-${i}" src="${it.manualImg || ''}" class="img-preview" style="display: ${it.manualImg ? 'block' : 'none'}">
                             <div class="flex gap-2 mt-3 max-w-[320px]">
                                 <div id="box-upload-${i}" class="flex-1 p-2 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-200 text-xs font-bold text-gray-600 transition" onclick="triggerUpload(${i})">
-                                    ${it.manualImg ? '📁 Ganti Manual' : '📁 Upload Manual'}
+                                    📁 Upload Manual
                                 </div>
-                                <button id="btn-ai-img-${i}" onclick="buatGambarAI(${i})" class="flex-1 p-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow transition transform active:scale-95">
-                                    🔍 Cari Gambar Otomatis
+                                <button id="btn-ai-img-${i}" onclick="gantiAtauCariGambar(${i})" class="flex-1 p-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow transition transform active:scale-95">
+                                    ${it.manualImg ? '🔄 Ganti Gambar Otomatis' : '🔍 Cari Gambar Otomatis'}
                                 </button>
                             </div>
                             <input type="file" id="file-${i}" class="hidden" accept="image/*" onchange="uploadGambar(${i}, this)">
