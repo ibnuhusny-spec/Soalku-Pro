@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soalku Web - Generator Evaluasi AI</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .font-arab { font-family: 'Arabic Typesetting', 'Traditional Arabic', serif; font-size: 1.7rem; line-height: 1.6; color: #1e3a8a; padding: 0 4px; }
+        #modalKuis .font-arab { font-size: 1.6em; line-height: 1.4; }
+        .fade-out { opacity: 0; visibility: hidden; transition: opacity 0.8s ease-out, visibility 0.8s; }
+        .img-upload-box { border: 2px dashed #cbd5e1; background-color: #f8fafc; border-radius: 0.5rem; text-align: center; padding: 1rem; cursor: pointer; transition: all 0.2s; max-width: 300px; margin-top: 10px; }
+        .img-upload-box:hover { border-color: #3b82f6; background-color: #eff6ff; }
+        .img-preview { max-width: 300px; max-height: 200px; border-radius: 0.5rem; border: 1px solid #e2e8f0; object-fit: contain; display: none; margin-top: 10px; }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen relative overflow-x-hidden font-sans pb-20">
+
+    <div id="appUtama" class="hidden">
+        <div id="splashScreen" class="fixed inset-0 z-[100] bg-gradient-to-br from-blue-900 via-indigo-800 to-blue-900 flex flex-col items-center justify-center text-center p-6">
+            <div class="h-32 w-32 bg-white rounded-full flex items-center justify-center text-blue-900 font-black text-6xl mb-6 shadow-2xl animate-bounce">SP</div>
+            <h1 class="text-5xl md:text-6xl font-extrabold text-white tracking-tight mb-2 drop-shadow-lg">Soalku <span class="text-yellow-400">Web</span></h1>
+            <p class="text-blue-200 text-lg md:text-xl font-medium tracking-wide">Modular AI Assessment Builder</p>
+        </div>
+
+        <div id="modalPengaturan" class="fixed inset-0 z-50 bg-black/60 hidden flex-col items-center justify-center p-4 backdrop-blur-sm">
+            <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">⚙️ Pengaturan Sistem</h2>
+                <div class="space-y-4 mt-6">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Google Gemini API Key <span class="text-red-500">*</span></label>
+                        <input type="password" id="inputApiKey" placeholder="AIzaSy..." class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Pilih Model Gemini</label>
+                        <select id="selectModel" class="w-full border rounded-lg p-3 outline-none bg-white">
+                            <option value="gemini-3-flash-preview" selected>gemini-3-flash-preview (Direkomendasikan)</option>
+                            <option value="custom">-- Ketik Model Manual --</option>
+                        </select>
+                    </div>
+                    <div id="wrapperModelManual" class="hidden">
+                        <input type="text" id="inputModelManual" placeholder="misal: gemini-4.0" class="w-full border rounded-lg p-3">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">URL Web App Google Sheets</label>
+                        <input type="text" id="inputSheetsUrl" placeholder="https://script.google.com/macros/s/..." class="w-full border rounded-lg p-3 outline-none text-sm font-mono text-blue-600">
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-end gap-3">
+                    <button id="btnTutupPengaturan" class="px-5 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-lg hidden">Batal</button>
+                    <button id="btnSimpanPengaturan" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition">Simpan & Mulai</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-6xl mx-auto mt-4 md:mt-8 p-2 md:p-4">
+            <div class="bg-white rounded-t-2xl shadow-sm border-b-4 border-blue-600 overflow-hidden">
+                <div class="p-6 flex items-center justify-between bg-gradient-to-r from-blue-800 to-indigo-900">
+                    <div class="flex items-center gap-4">
+                        <div class="h-12 w-12 bg-white rounded font-black text-blue-900 flex items-center justify-center text-xl">SP</div>
+                        <div><h1 class="text-2xl font-extrabold text-white tracking-tight">Soalku <span class="text-yellow-400">Web</span></h1></div>
+                    </div>
+                    <button id="btnBukaPengaturan" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-sm font-bold border border-white/20 transition">⚙️ Setting</button>
+                </div>
+                <nav class="flex overflow-x-auto bg-white border-b">
+                    <button class="nav-main-btn flex-1 py-4 text-sm font-bold border-b-4 border-blue-600 text-blue-700 whitespace-nowrap" data-target="view-utama">📝 1. MENU UTAMA</button>
+                    <button class="nav-main-btn flex-1 py-4 text-sm font-bold border-b-4 border-transparent text-gray-500 hover:bg-gray-50 whitespace-nowrap" data-target="view-laporan">📊 2. LAPORAN & HASIL</button>
+                    <button class="nav-main-btn flex-1 py-4 text-sm font-bold border-b-4 border-transparent text-gray-500 hover:bg-gray-50 whitespace-nowrap" data-target="view-info">ℹ️ 3. INFORMASI</button>
+                </nav>
+            </div>
+
+            <div id="view-utama" class="view-section bg-white p-6 md:p-8 rounded-b-2xl shadow-md border border-t-0 border-gray-200">
+                <div class="mb-8">
+                    <h2 class="text-lg font-bold text-gray-800 border-l-4 border-blue-600 pl-3 mb-4">A. Identitas Ujian & Materi</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-5 rounded-xl border border-gray-200">
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Satuan Pendidikan</label><input type="text" id="inputSekolah" value="SDIT Qurratu A’yun Al-Islami" class="w-full border rounded p-2 text-sm"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Nama Guru</label><input type="text" id="inputGuru" placeholder="Nama Guru" class="w-full border rounded p-2 text-sm"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Fase / Kelas</label><input type="text" id="inputKelas" placeholder="Kelas 5" class="w-full border rounded p-2 text-sm"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Mata Pelajaran</label><input type="text" id="inputMapel" value="Bahasa Arab" class="w-full border rounded p-2 text-sm font-bold text-blue-700"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">Hari & Tanggal</label><input type="date" id="inputTanggal" class="w-full border rounded p-2 text-sm text-gray-700"></div>
+                        <div class="md:col-span-3">
+                            <label class="block text-xs font-bold text-gray-500 mb-1">Topik / Lingkup Materi</label>
+                            <textarea id="inputTopik" rows="2" placeholder="Contoh: Kosakata Ruang Kelas..." class="w-full border-2 border-blue-200 rounded p-2 text-sm font-bold focus:border-blue-500 outline-none resize-y"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-lg font-bold text-gray-800 border-l-4 border-green-500 pl-3 mb-4">B. Teknis Soal (Pembangun Modul)</h2>
+                    <div class="bg-green-50 p-5 rounded-xl border border-green-200">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Tipe Soal</label>
+                                <select id="modTipe" class="w-full border rounded p-2 text-sm bg-white">
+                                    <option value="Pilihan Ganda">Pilihan Ganda</option>
+                                    <option value="PG Kompleks">PG Kompleks (Lebih dari 1 jawaban)</option>
+                                    <option value="Benar / Salah">Benar / Salah</option>
+                                    <option value="Isian Singkat">Isian Singkat</option>
+                                    <option value="Uraian">Uraian / Essai</option>
+                                </select>
+                            </div>
+                            <div><label class="block text-xs font-bold text-gray-700 mb-1">Jumlah Soal</label><input type="number" id="modJumlah" value="5" min="1" class="w-full border rounded p-2 text-sm text-center bg-white"></div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Tingkat Kesulitan</label>
+                                <select id="modSulit" class="w-full border rounded p-2 text-sm bg-white">
+                                    <option value="Campuran">Campuran / Acak</option>
+                                    <option value="Mudah">Mudah</option>
+                                    <option value="Sedang">Sedang</option>
+                                    <option value="Sulit">Sulit (HOTS)</option>
+                                </select>
+                            </div>
+                            <div id="wrapperOpsiPG">
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Jumlah Opsi (Khusus PG)</label>
+                                <select id="modOpsi" class="w-full border rounded p-2 text-sm bg-white">
+                                    <option value="3">3 Opsi (A, B, C)</option>
+                                    <option value="4" selected>4 Opsi (A, B, C, D)</option>
+                                    <option value="5">5 Opsi (A, B, C, D, E)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-xs font-bold text-gray-700 mb-2">Level Kognitif</label>
+                            <div class="flex flex-wrap gap-3">
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C1"> C1</label>
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C2"> C2</label>
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C3" checked> C3</label>
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C4"> C4</label>
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C5"> C5</label>
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C6"> C6</label>
+                            </div>
+                        </div>
+                        <button type="button" id="btnTambahModul" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2 px-4 rounded shadow transition">➕ Tambah Bagian Ini ke Struktur</button>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-lg font-bold text-gray-800 border-l-4 border-indigo-500 pl-3 mb-4">C. Struktur Paket Soal Tersimpan</h2>
+                    <div class="overflow-x-auto border rounded-xl shadow-sm">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-indigo-50 text-indigo-900 border-b">
+                                <tr><th class="p-3">Bagian</th><th class="p-3">Tipe Soal</th><th class="p-3 text-center">Jml</th><th class="p-3">Kesulitan</th><th class="p-3">Level Kognitif</th><th class="p-3 text-center">Opsi</th><th class="p-3 text-center">Aksi</th></tr>
+                            </thead>
+                            <tbody id="tabelStruktur" class="divide-y bg-white">
+                                <tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Belum ada struktur soal. Silakan "Tambah Bagian" di atas.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center border-t pt-6">
+                    <button type="button" id="btnResetAll" class="text-red-500 hover:text-red-700 font-bold px-4 py-2 transition">🗑️ Reset Semua</button>
+                    <button type="button" id="btnGenerateAI" class="bg-blue-600 hover:bg-blue-800 text-white font-black py-4 px-10 rounded-xl shadow-xl transition transform active:scale-95 text-lg" disabled>MULAI GENERATE SOAL AI ✨</button>
+                </div>
+            </div>
+
+            <div id="view-laporan" class="view-section hidden bg-white p-2 md:p-6 rounded-b-2xl shadow-md border border-t-0 border-gray-200">
+                <div id="pesanKosongLaporan" class="text-center py-20 text-gray-400">
+                    <span class="text-6xl block mb-4">📭</span>
+                    <p class="text-lg">Belum ada hasil soal.</p>
+                </div>
+                <div id="areaHasil" class="hidden">
+                    <div class="bg-gray-50 p-4 rounded-xl border flex flex-col md:flex-row justify-between gap-4 mb-6">
+                        <div class="flex bg-white rounded-lg p-1 shadow-sm border w-full md:w-auto">
+                            <button class="tab-hasil flex-1 md:flex-none px-4 py-2 text-sm font-bold border-b-2 border-blue-600 text-blue-600" data-target="soal">NASKAH</button>
+                            <button class="tab-hasil flex-1 md:flex-none px-4 py-2 text-sm font-bold text-gray-400" data-target="kunci">KUNCI</button>
+                            <button class="tab-hasil flex-1 md:flex-none px-4 py-2 text-sm font-bold text-gray-400" data-target="kisi">KISI-KISI</button>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button id="btnSimpanSheets" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold shadow hover:bg-emerald-700">💾 SIMPAN KE SHEETS</button>
+                            <button id="btnModeKuis" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-bold shadow hover:bg-indigo-700">📽️ MODE KUIS</button>
+                            <button id="btnDownload" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-bold shadow hover:bg-black">⬇️ DOWNLOAD WORD</button>
+                        </div>
+                    </div>
+                    <div id="kontenHasil" class="p-2 md:p-8 bg-white min-h-[400px] border rounded-xl"></div>
+                </div>
+            </div>
+
+            <div id="view-info" class="view-section hidden bg-white p-6 md:p-8 rounded-b-2xl shadow-md border border-t-0 border-gray-200">
+                <div class="border-b-2 border-dashed border-gray-200 pb-6 mb-6">
+                    <h2 class="text-3xl font-black text-blue-900 mb-2">📚 Panduan Resmi Soalku Web</h2>
+                </div>
+                <div class="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 bg-blue-900 rounded-full flex items-center justify-center text-white font-black text-xl shadow-lg">IH</div>
+                        <div>
+                            <p class="text-sm text-gray-800 font-bold">Dikembangkan oleh <span class="text-blue-600">Ibnu Husny</span></p>
+                            <p class="text-xs text-gray-500 font-medium">SDIT Qurratu A’yun Al-Islami Maros</p>
+                        </div>
+                    </div>
+                    <span class="bg-blue-600 text-white text-xs font-mono px-3 py-1.5 rounded shadow">Web Edition (Vercel)</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalKuis" class="fixed inset-0 bg-white z-[60] hidden flex-col">
+            <div id="overlayFeedback" class="fixed inset-0 z-[70] flex items-center justify-center pointer-events-none hidden bg-black/30 backdrop-blur-sm">
+                <div id="kuisFeedback" class="animate-pop text-center"></div>
+            </div>
+            <div class="p-4 border-b flex justify-between items-center bg-indigo-50 shadow-sm z-[65]">
+                <h2 class="font-bold text-indigo-900 text-lg flex items-center gap-2">📽️ Mode Kuis Interaktif</h2>
+                <button id="btnCloseKuis" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl font-bold shadow transition">Tutup Kuis ✖</button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 md:p-10 flex flex-col items-center justify-center bg-gray-100 z-[65]">
+                <div id="kuisContainer" class="bg-white p-6 md:p-12 rounded-3xl shadow-2xl w-full max-w-5xl border text-center"></div>
+            </div>
+            <div class="p-6 bg-white border-t flex justify-between items-center shadow-inner z-[65]">
+                <button id="btnKuisPrev" class="bg-gray-600 hover:bg-gray-700 text-white px-6 md:px-8 py-3 rounded-xl font-bold shadow transition">⬅️ Sebelumnya</button>
+                <button id="btnKuisNext" class="bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-3 rounded-xl font-bold shadow transition">Selanjutnya ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+        let savedApiKey = localStorage.getItem('soalku_apiKey') || "";
+        let savedModel = localStorage.getItem('soalku_aiModel') || "gemini-3-flash-preview";
+        let savedSheetsUrl = localStorage.getItem('soalku_sheetsUrl') || ""; 
+        let strukturSoal = []; let hasilGenerate = []; let kuisTimeout;
+
+        function getFormattedDate() {
+            const dateVal = document.getElementById('inputTanggal').value;
+            if (!dateVal) return '';
+            try { return new Date(dateVal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); } catch(e) { return dateVal; }
+        }
+
+        // ================= WEB BOOT (TANPA HWID LOCK) =================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Langsung menyalakan aplikasi tanpa mengecek HWID Electron
+            document.getElementById('appUtama').classList.remove('hidden');
+            setTimeout(() => { document.getElementById('splashScreen').classList.add('fade-out'); if(!savedApiKey) setTimeout(() => bukaPengaturan(false), 800); }, 2000);
+            renderTabelStruktur();
+        });
+
+        // ================= UI & NAVIGATION =================
+        document.querySelectorAll('.nav-main-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                document.querySelectorAll('.nav-main-btn').forEach(x => { x.classList.remove('border-blue-600', 'text-blue-700'); x.classList.add('border-transparent', 'text-gray-500'); });
+                e.target.classList.remove('border-transparent', 'text-gray-500'); e.target.classList.add('border-blue-600', 'text-blue-700');
+                document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById(e.target.dataset.target).classList.remove('hidden');
+            };
+        });
+
+        const modalPengaturan = document.getElementById('modalPengaturan');
+        document.getElementById('selectModel').onchange = (e) => document.getElementById('wrapperModelManual').classList.toggle('hidden', e.target.value !== 'custom');
+        
+        function bukaPengaturan(bisaBatal = true) {
+            document.getElementById('inputApiKey').value = savedApiKey; document.getElementById('inputSheetsUrl').value = savedSheetsUrl;
+            let found = false; for(let opt of document.getElementById('selectModel').options) { if(opt.value === savedModel) { document.getElementById('selectModel').value = savedModel; found = true; break; } }
+            if(!found && savedModel) { document.getElementById('selectModel').value = 'custom'; document.getElementById('wrapperModelManual').classList.remove('hidden'); document.getElementById('inputModelManual').value = savedModel; }
+            document.getElementById('btnTutupPengaturan').style.display = bisaBatal ? 'block' : 'none'; modalPengaturan.classList.remove('hidden'); modalPengaturan.classList.add('flex');
+        }
+        document.getElementById('btnBukaPengaturan').onclick = () => bukaPengaturan(true);
+        document.getElementById('btnTutupPengaturan').onclick = () => { modalPengaturan.classList.remove('flex'); modalPengaturan.classList.add('hidden'); };
+        document.getElementById('btnSimpanPengaturan').onclick = () => {
+            const key = document.getElementById('inputApiKey').value.trim(); let mdl = document.getElementById('selectModel').value; if(mdl === 'custom') mdl = document.getElementById('inputModelManual').value.trim() || "gemini-3-flash-preview";
+            if(!key || !mdl) return alert("API Key wajib diisi!");
+            localStorage.setItem('soalku_apiKey', key); localStorage.setItem('soalku_aiModel', mdl); localStorage.setItem('soalku_sheetsUrl', document.getElementById('inputSheetsUrl').value.trim());
+            savedApiKey = key; savedModel = mdl; savedSheetsUrl = localStorage.getItem('soalku_sheetsUrl');
+            modalPengaturan.classList.remove('flex'); modalPengaturan.classList.add('hidden');
+        };
+
+        // ================= BUILDER LOGIC =================
+        document.getElementById('modTipe').onchange = (e) => { document.getElementById('wrapperOpsiPG').style.display = e.target.value.includes("Pilihan Ganda") || e.target.value === "PG Kompleks" ? 'block' : 'none'; };
+        function renderTabelStruktur() {
+            const tbody = document.getElementById('tabelStruktur');
+            if(strukturSoal.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Belum ada struktur soal. Silakan "Tambah Bagian" di atas.</td></tr>`; document.getElementById('btnGenerateAI').disabled = true; document.getElementById('btnGenerateAI').classList.replace('bg-blue-600', 'bg-gray-400'); return; }
+            document.getElementById('btnGenerateAI').disabled = false; document.getElementById('btnGenerateAI').classList.replace('bg-gray-400', 'bg-blue-600');
+            let html = "";
+            strukturSoal.forEach((bag, i) => { html += `<tr class="hover:bg-gray-50"><td class="p-3 font-bold text-gray-700">Bagian ${i+1}</td><td class="p-3 text-blue-700 font-semibold">${bag.tipe}</td><td class="p-3 text-center font-bold">${bag.jumlah}</td><td class="p-3">${bag.sulit}</td><td class="p-3 text-xs">${bag.level}</td><td class="p-3 text-center">${bag.tipe.includes("PG") ? bag.opsi : '-'}</td><td class="p-3 text-center"><button onclick="hapusBagian(${i})" class="text-red-500 hover:bg-red-100 p-1 rounded transition">❌</button></td></tr>`; });
+            tbody.innerHTML = html;
+        }
+        window.hapusBagian = (idx) => { strukturSoal.splice(idx, 1); renderTabelStruktur(); };
+        document.getElementById('btnTambahModul').onclick = () => {
+            const tipe = document.getElementById('modTipe').value; const jumlah = parseInt(document.getElementById('modJumlah').value); const sulit = document.getElementById('modSulit').value; const opsi = document.getElementById('modOpsi').value; const levels = Array.from(document.querySelectorAll('.chk-level:checked')).map(cb => cb.value).join(', ');
+            if(jumlah < 1 || isNaN(jumlah)) return alert("Jumlah minimal 1!"); if(!levels) return alert("Pilih minimal 1 Level Kognitif!");
+            strukturSoal.push({ tipe, jumlah, sulit, level: levels, opsi: tipe.includes("PG") ? parseInt(opsi) : null }); renderTabelStruktur();
+        };
+        document.getElementById('btnResetAll').onclick = () => { if(confirm("Yakin hapus semua pengaturan struktur?")) { strukturSoal = []; renderTabelStruktur(); } };
+
+        // ================= GEMINI AI LOGIC =================
+        document.getElementById('btnGenerateAI').onclick = async () => {
+            if(!savedApiKey) return bukaPengaturan(false);
+            const mapel = document.getElementById('inputMapel').value; const topik = document.getElementById('inputTopik').value; const kelas = document.getElementById('inputKelas').value;
+            if(!topik) return alert("Topik Materi belum diisi!");
+            const btn = document.getElementById('btnGenerateAI'); btn.innerHTML = "MEMPROSES MULTI-MODUL AI... ⏳"; btn.disabled = true;
+            try {
+                const genAI = new GoogleGenerativeAI(savedApiKey); const model = genAI.getGenerativeModel({ model: savedModel });
+                let rincianModul = ""; let totalSoal = 0;
+                strukturSoal.forEach((bag, i) => { totalSoal += bag.jumlah; let opsiTxt = bag.opsi ? `Buat opsi jawaban persis sebanyak ${bag.opsi} buah (A,B,C..).` : ''; rincianModul += `\n- Bagian ${i+1}: ${bag.jumlah} soal tipe "${bag.tipe}". Kesulitan: ${bag.sulit}. Level kognitif acak antara: [${bag.level}]. ${opsiTxt}`; });
+                const prompt = `Anda adalah asisten pembuat soal ujian. Buatkan total ${totalSoal} soal untuk Fase/Kelas: ${kelas}, Mapel: ${mapel}, Topik: "${topik}".
+                STRUKTUR PEMBAGIAN SOAL:${rincianModul}
+                ATURAN WAJIB:
+                1. Jika ada teks Arab, WAJIB tulis dalam huruf Hijaiyah lengkap harakat.
+                2. Balas HANYA dengan 1 JSON Array murni yang berisi seluruh soal secara berurutan.
+                3. Struktur objek JSON wajib seperti ini:
+                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2"}]`;
+                const res = await model.generateContent(prompt);
+                hasilGenerate = JSON.parse(res.response.text().replace(/```json/gi, "").replace(/```/g, "").trim());
+                hasilGenerate.forEach(it => it.manualImg = null);
+                document.querySelector('.nav-main-btn[data-target="view-laporan"]').click(); document.getElementById('pesanKosongLaporan').classList.add('hidden'); document.getElementById('areaHasil').classList.remove('hidden'); renderLaporan('soal');
+            } catch (e) { alert("Error API: " + e.message); }
+            btn.innerHTML = "MULAI GENERATE SOAL AI ✨"; btn.disabled = false;
+        };
+
+        // ================= GAMBAR AI (FULL POWER WEB VERSION) =================
+        window.triggerUpload = (idx) => document.getElementById(`file-${idx}`).click();
+        window.uploadGambar = (idx, input) => {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    hasilGenerate[idx].manualImg = e.target.result;
+                    document.getElementById(`img-preview-${idx}`).src = e.target.result; document.getElementById(`img-preview-${idx}`).style.display = 'block';
+                    document.getElementById(`box-upload-${idx}`).innerHTML = '📁 Ganti Manual';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        window.buatGambarAI = async (idx) => {
+            const btn = document.getElementById(`btn-ai-img-${idx}`);
+            btn.innerHTML = "⏳ Melukis... (Maks 20dtk)";
+            btn.disabled = true;
+
+            try {
+                const topikMateri = document.getElementById('inputTopik').value || "Pendidikan";
+                const promptBersih = `Ilustrasi buku pelajaran sekolah anak, topik: ${topikMateri}. Gambar 2D, vektor, jelas, warna cerah, tanpa ada teks tulisan di dalam gambar.`;
+                const finalPrompt = encodeURIComponent(promptBersih);
+                
+                // Gunakan Fetch karena Vercel Web aman dari blokir File:// CORS
+                const imageUrl = `https://image.pollinations.ai/prompt/${finalPrompt}?width=512&height=512&nologo=true&seed=${Math.floor(Math.random() * 1000)}`;
+                
+                const controller = new AbortController();
+                const idTimeout = setTimeout(() => controller.abort(), 20000); // 20 detik strict timeout
+
+                const response = await fetch(imageUrl, { signal: controller.signal });
+                clearTimeout(idTimeout);
+
+                if (!response.ok) throw new Error("Server Error");
+                
+                const blob = await response.blob();
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const base64data = reader.result;
+                    hasilGenerate[idx].manualImg = base64data; // Simpan base64 agar aman diexport Word
+                    
+                    document.getElementById(`img-preview-${idx}`).src = base64data;
+                    document.getElementById(`img-preview-${idx}`).style.display = 'block';
+                    document.getElementById(`box-upload-${idx}`).innerHTML = '📁 Ganti Manual';
+                    
+                    btn.innerHTML = "✨ Generate AI";
+                    btn.disabled = false;
+                };
+                reader.readAsDataURL(blob);
+
+            } catch (error) {
+                btn.innerHTML = "✨ Coba Lagi";
+                btn.disabled = false;
+                if (error.name === 'AbortError') {
+                    alert("⏱️ Waktu Habis! Server gratis sedang padat. Silakan klik 'Coba Lagi' sebentar lagi.");
+                } else {
+                    alert("❌ Gagal terhubung. Pastikan internet Anda jalan, atau coba lagi nanti.");
+                }
+            }
+        };
+
+        // ================= ISOLASI ARAB & RENDER =================
+        function wrapArabic(text, isWord = false) {
+            if (!text) return ""; const AR = '\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF\\uFB50-\\uFDFF\\uFE70-\\uFEFF'; const PUNCT = '\\s\\.\\,\\_\\-\\/\\(\\)\\[\\]\\?\\!\\:\\;\\\'\\"0-9\\u0660-\\u0669\\u06F0-\\u06F9\\u060C\\u061B\\u061F'; const regex = new RegExp('([' + AR + ']+(?:[' + PUNCT + ']+[' + AR + ']+)*[' + PUNCT + ']*)', 'g');
+            return text.toString().replace(regex, (m) => { if (m.trim().length > 0) { return isWord ? `<span dir="rtl" lang="AR-SA" class="ar">${m}&#x200F;</span>` : `<bdi dir="rtl" class="font-arab">${m}&#x200F;</bdi>`; } return m; });
+        }
+
+        document.querySelectorAll('.tab-hasil').forEach(btn => {
+            btn.onclick = (e) => {
+                document.querySelectorAll('.tab-hasil').forEach(x => { x.classList.remove('border-blue-600', 'text-blue-600'); x.classList.add('border-transparent', 'text-gray-400'); });
+                e.target.classList.remove('border-transparent', 'text-gray-400'); e.target.classList.add('border-blue-600', 'text-blue-600'); renderLaporan(e.target.dataset.target);
+            };
+        });
+
+        function renderLaporan(tab) {
+            const wadah = document.getElementById('kontenHasil'); const mapel = document.getElementById('inputMapel').value; const tanggalFormat = getFormattedDate(); 
+            if(tab === 'soal') {
+                let h = `<div class="mb-8 p-6 border border-gray-300 rounded-xl bg-white shadow-sm"><h2 class="text-center font-black text-2xl mb-6 uppercase text-gray-900">${document.getElementById('inputSekolah').value}</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm font-medium text-gray-800"><div class="flex"><span class="w-32 text-gray-600">Mata Pelajaran</span> <span class="mr-2">:</span> <span class="font-bold">${mapel}</span></div><div class="flex"><span class="w-32 text-gray-600">Nama Lengkap</span> <span class="mr-2">:</span> <span class="text-gray-400">...................................................</span></div><div class="flex"><span class="w-32 text-gray-600">Fase / Kelas</span> <span class="mr-2">:</span> <span class="font-bold">${document.getElementById('inputKelas').value}</span></div><div class="flex"><span class="w-32 text-gray-600">Hari, Tanggal</span> <span class="mr-2">:</span> <span class="font-bold">${tanggalFormat || '<span class="text-gray-400">...................................................</span>'}</span></div><div class="flex"><span class="w-32 text-gray-600">Nama Guru</span> <span class="mr-2">:</span> <span class="font-bold">${document.getElementById('inputGuru').value}</span></div><div class="flex"><span class="w-32 text-gray-600">Nilai</span> <span class="mr-2">:</span> </div></div></div><div class="space-y-6">`;
+                hasilGenerate.forEach((it, i) => {
+                    h += `<div class="p-5 bg-gray-50 rounded-xl border relative"><div class="mb-3"><span class="bg-blue-100 text-blue-800 text-[10px] font-black px-2 py-1 rounded tracking-wider uppercase">${it.tipe}</span></div><p class="text-lg text-gray-800" dir="ltr"><strong>${i+1}. </strong> ${wrapArabic(it.soal)}</p>`;
+                    
+                    // TOMBOL GENERATE AI (AKTIF DI WEB)
+                    h += `<div>
+                            <img id="img-preview-${i}" src="${it.manualImg || ''}" class="img-preview" style="display: ${it.manualImg ? 'block' : 'none'}">
+                            <div class="flex gap-2 mt-3 max-w-[320px]">
+                                <div id="box-upload-${i}" class="flex-1 p-2 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-200 text-xs font-bold text-gray-600 transition" onclick="triggerUpload(${i})">
+                                    ${it.manualImg ? '📁 Ganti Manual' : '📁 Upload Manual'}
+                                </div>
+                                <button id="btn-ai-img-${i}" onclick="buatGambarAI(${i})" class="flex-1 p-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow transition transform active:scale-95">
+                                    ✨ Generate AI
+                                </button>
+                            </div>
+                            <input type="file" id="file-${i}" class="hidden" accept="image/*" onchange="uploadGambar(${i}, this)">
+                          </div>`;
+
+                    if(it.opsi && it.opsi.length > 0) { h += `<div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 pl-4" dir="ltr">${it.opsi.map(o => `<div class="text-gray-700">${it.tipe === 'PG Kompleks' ? '☐' : '○'} ${wrapArabic(o)}</div>`).join('')}</div>`; } else if (it.tipe === "Isian Singkat") { h += `<div class="mt-4 border-b-2 border-dotted border-gray-400 h-6 w-1/2"></div>`; } else { h += `<div class="mt-4 border-b-2 border-dotted border-gray-400 h-8 w-full"></div><div class="mt-4 border-b-2 border-dotted border-gray-400 h-8 w-full"></div>`; }
+                    h += `</div>`;
+                });
+                wadah.innerHTML = h + `</div>`;
+            } 
+            else if (tab === 'kunci') {
+                let h = `<h3 class="font-bold text-lg mb-6 text-center uppercase">Tabel Kunci Jawaban</h3><div class="overflow-x-auto rounded-lg border shadow-sm"><table class="w-full text-sm text-left"><thead class="bg-gray-200 text-gray-700"><tr><th class="p-3 w-12 text-center">No</th><th class="p-3 w-1/4">Tipe Soal</th><th class="p-3">Jawaban Benar</th><th class="p-3 w-20 text-center">Level</th></tr></thead><tbody class="divide-y bg-white">`;
+                hasilGenerate.forEach((it, i) => { h += `<tr class="hover:bg-gray-50"><td class="p-3 text-center font-bold">${i+1}</td><td class="p-3 text-xs text-gray-500 uppercase tracking-wide">${it.tipe}</td><td class="p-3 font-semibold text-blue-700" dir="ltr">${wrapArabic(it.jawaban)}</td><td class="p-3 text-center">${it.level || '-'}</td></tr>`; });
+                wadah.innerHTML = h + `</tbody></table></div>`;
+            }
+            else if (tab === 'kisi') {
+                let h = `<h3 class="font-bold text-lg mb-6 text-center uppercase">Kisi-Kisi Ujian</h3><div class="overflow-x-auto rounded-lg border shadow-sm"><table class="w-full text-xs text-left"><thead class="bg-indigo-50 text-indigo-900 border-b"><tr><th class="p-2 text-center">No</th><th class="p-2">Teks Soal / Indikator</th><th class="p-2 text-center">Level</th><th class="p-2 text-center">Bentuk</th></tr></thead><tbody class="divide-y bg-white">`;
+                hasilGenerate.forEach((it, i) => { h += `<tr><td class="p-2 text-center">${i+1}</td><td class="p-2" dir="ltr">${wrapArabic(it.soal)}</td><td class="p-2 text-center">${it.level || '-'}</td><td class="p-2 text-center font-bold">${it.tipe}</td></tr>`; });
+                wadah.innerHTML = h + `</tbody></table></div>`;
+            }
+        }
+
+        // ================= KUIS & EXPORT WORD =================
+        function akhiriKuis() { document.getElementById('overlayFeedback').classList.add('hidden'); document.getElementById('kuisContainer').innerHTML = `<div class="py-12 animate-pop"><div class="text-6xl md:text-8xl mb-6">🏆</div><h2 class="text-4xl md:text-5xl font-black text-gray-800 mb-6">KUIS SELESAI!</h2><button onclick="document.getElementById('btnCloseKuis').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-bold text-2xl shadow-lg transition transform active:scale-95">Tutup Kuis</button></div>`; }
+        let idxK = 0; let kuisTerkunci = false;
+        document.getElementById('btnModeKuis').onclick = () => { if(hasilGenerate.length===0)return; idxK = 0; renderKuis(); document.getElementById('modalKuis').classList.replace('hidden', 'flex'); };
+        document.getElementById('btnCloseKuis').onclick = () => { clearTimeout(kuisTimeout); document.getElementById('modalKuis').classList.replace('flex', 'hidden'); document.getElementById('overlayFeedback').classList.add('hidden'); };
+        document.getElementById('btnKuisNext').onclick = () => { clearTimeout(kuisTimeout); if(idxK < hasilGenerate.length-1) { idxK++; renderKuis(); } else { akhiriKuis(); } };
+        document.getElementById('btnKuisPrev').onclick = () => { clearTimeout(kuisTimeout); if(idxK > 0) { idxK--; renderKuis(); } };
+
+        function renderKuis() {
+            const it = hasilGenerate[idxK]; kuisTerkunci = false; document.getElementById('overlayFeedback').classList.add('hidden');
+            let h = `<div class="mb-4 text-sm font-black text-blue-500 uppercase tracking-widest bg-blue-50 py-1 px-4 rounded-full inline-block">${it.tipe} - SOAL ${idxK+1}</div><h2 class="text-3xl md:text-5xl font-bold leading-relaxed mb-8 text-gray-800" dir="ltr"><bdi>${idxK+1}. </bdi> ${wrapArabic(it.soal)}</h2>`;
+            if(it.manualImg) h += `<img src="${it.manualImg}" class="max-h-72 mx-auto rounded-xl shadow border mb-8">`;
+            h += `<div id="wadahOpsiKuis" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left" dir="ltr"></div><div id="areaJawabanKuis" class="hidden mt-10 p-6 bg-gray-50 text-gray-800 text-2xl md:text-4xl font-black rounded-2xl border-2 border-gray-300" dir="ltr">✅ JAWABAN BENAR: <br><span class="mt-2 block text-green-700">${wrapArabic(it.jawaban)}</span></div>`;
+            document.getElementById('kuisContainer').innerHTML = h; const wadahOpsi = document.getElementById('wadahOpsiKuis');
+            if(it.opsi && it.opsi.length > 0) {
+                it.opsi.forEach(o => {
+                    const divOpt = document.createElement('div'); divOpt.className = "p-4 md:p-6 border-2 rounded-2xl text-xl md:text-2xl font-medium cursor-pointer hover:border-blue-500 bg-gray-50 transition"; divOpt.innerHTML = wrapArabic(o);
+                    divOpt.onclick = () => {
+                        if (it.tipe !== "PG Kompleks" && kuisTerkunci) return; if (it.tipe !== "PG Kompleks") kuisTerkunci = true;
+                        const hurufDepanOpsi = o.trim().substring(0, 1).toUpperCase(); const hurufDepanKunci = it.jawaban.trim().substring(0, 1).toUpperCase();
+                        let isBenar = (it.tipe === "PG Kompleks") ? it.jawaban.includes(hurufDepanOpsi) : ((hurufDepanOpsi === hurufDepanKunci) || it.jawaban.includes(o.trim()));
+                        divOpt.classList.remove('bg-gray-50', 'hover:border-blue-500');
+                        if (isBenar) { divOpt.classList.add('bg-green-500', 'text-white', 'border-green-600', 'shadow-lg'); document.getElementById('overlayFeedback').classList.remove('hidden'); document.getElementById('kuisFeedback').innerHTML = `<div class="bg-green-500 text-white text-3xl md:text-5xl font-black p-8 rounded-3xl shadow-[0_0_40px_rgba(34,197,94,0.5)] border-4 border-green-300">🎉 TEPAT SEKALI! 🎉</div>`; } 
+                        else { divOpt.classList.add('bg-red-500', 'text-white', 'border-red-600', 'shadow-md'); document.getElementById('overlayFeedback').classList.remove('hidden'); document.getElementById('kuisFeedback').innerHTML = `<div class="bg-red-500 text-white text-3xl md:text-5xl font-black p-8 rounded-3xl shadow-[0_0_40px_rgba(239,68,68,0.5)] border-4 border-red-300">❌ KURANG TEPAT! ❌</div>`; if (it.tipe !== "PG Kompleks") { Array.from(wadahOpsi.children).forEach(child => { if (child.innerText.trim().toUpperCase().startsWith(hurufDepanKunci) || it.jawaban.includes(child.innerText.trim())) { child.classList.remove('bg-gray-50', 'hover:border-blue-500'); child.classList.add('bg-green-500', 'text-white', 'border-green-600', 'shadow-lg'); } }); } }
+                        document.getElementById('areaJawabanKuis').classList.remove('hidden');
+                        if (it.tipe !== "PG Kompleks") { clearTimeout(kuisTimeout); kuisTimeout = setTimeout(() => { if(document.getElementById('modalKuis').classList.contains('hidden')) return; if(idxK < hasilGenerate.length - 1) { idxK++; renderKuis(); } else { akhiriKuis(); } }, 3000); }
+                    }; wadahOpsi.appendChild(divOpt);
+                });
+            } else {
+                wadahOpsi.innerHTML = `<button id="btnTampilUraian" class="col-span-full py-6 md:py-8 bg-yellow-400 hover:bg-yellow-500 text-gray-900 text-2xl md:text-3xl font-black rounded-3xl shadow-lg border-b-4 border-yellow-600 active:border-b-0 active:mt-4 transition-all">🔍 LIHAT JAWABAN</button>`;
+                setTimeout(() => { document.getElementById('btnTampilUraian').onclick = function() { this.classList.add('hidden'); document.getElementById('areaJawabanKuis').classList.remove('hidden'); clearTimeout(kuisTimeout); kuisTimeout = setTimeout(() => { if(document.getElementById('modalKuis').classList.contains('hidden')) return; if(idxK < hasilGenerate.length - 1) { idxK++; renderKuis(); } else { akhiriKuis(); } }, 4000); }; }, 100);
+            }
+        }
+
+        document.getElementById('btnDownload').onclick = () => {
+            if(hasilGenerate.length === 0) return; const btn = document.getElementById('btnDownload'); btn.innerHTML = "⏳ Menyiapkan Dokumen...";
+            let w = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><style> body { font-family: 'Times New Roman', serif; font-size: 12pt; } .ar { font-family: 'Arabic Typesetting', serif; font-size: 16pt; } table.tabel-kisi { border-collapse: collapse; width: 100%; margin-top: 10px; } table.tabel-kisi th, table.tabel-kisi td { border: 1px solid black; padding: 5px; text-align: left; vertical-align: top; } table.tabel-kisi th { background-color: #f3f4f6; text-align: center; } table.kop-soal { width: 100%; border-collapse: collapse; margin-bottom: 10px; } table.kop-soal td { border: none; padding: 4px; vertical-align: top; } </style></head><body><h2 style="text-align:center; font-size:14pt; margin-bottom:15px; font-weight:bold;">${document.getElementById('inputSekolah').value.toUpperCase()}</h2><table class="kop-soal"><tr><td style="width:50%;"><strong>Mata Pelajaran:</strong> ${document.getElementById('inputMapel').value}</td><td style="width:50%;"><strong>Nama Lengkap:</strong> ........................................................</td></tr><tr><td><strong>Fase / Kelas:</strong> ${document.getElementById('inputKelas').value}</td><td><strong>Hari, Tanggal:</strong> ${getFormattedDate() || '........................................................'}</td></tr><tr><td><strong>Nama Guru:</strong> ${document.getElementById('inputGuru').value}</td><td><strong>Nilai:</strong> </td></tr></table><hr style="border:1.5px solid black; margin-bottom:15px;"><h3>A. NASKAH SOAL</h3>`;
+            hasilGenerate.forEach((it, i) => {
+                w += `<p style="margin-bottom:5px;" dir="ltr"><strong>${i+1}. </strong> ${wrapArabic(it.soal, true)}</p>`;
+                if (it.manualImg) w += `<p><img src="${it.manualImg}" width="250" style="border:1px solid #000;"></p>`;
+                if(it.opsi?.length) it.opsi.forEach(o => w += `<p style="margin-top:0; margin-bottom:0; margin-left:20px;" dir="ltr">${it.tipe.includes('PG Kompleks') ? '☐' : '○'} ${wrapArabic(o, true)}</p>`); else w += `<p>..........................................................................................<br>..........................................................................................</p>`;
+                w += `<br>`;
+            });
+            w += `<br clear=all style='mso-special-character:line-break;page-break-before:always'><h3>B. KUNCI JAWABAN</h3><table class="tabel-kisi"><thead><tr><th style="width:10%;">No</th><th style="width:25%;">Tipe Soal</th><th>Jawaban</th><th style="width:15%;">Level</th></tr></thead><tbody>`;
+            hasilGenerate.forEach((it, i) => { w += `<tr><td style="text-align:center;">${i+1}</td><td>${it.tipe}</td><td dir="ltr"><strong>${wrapArabic(it.jawaban, true)}</strong></td><td style="text-align:center;">${it.level || '-'}</td></tr>`; });
+            w += `</tbody></table><br clear=all style='mso-special-character:line-break;page-break-before:always'><h3>C. KISI-KISI PENULISAN SOAL</h3><table class="tabel-kisi"><thead><tr><th style="width:10%;">No</th><th>Teks Soal / Indikator</th><th style="width:15%;">Level</th><th style="width:20%;">Bentuk</th></tr></thead><tbody>`;
+            hasilGenerate.forEach((it, i) => { w += `<tr><td style="text-align:center;">${i+1}</td><td dir="ltr">${wrapArabic(it.soal, true)}</td><td style="text-align:center;">${it.level || '-'}</td><td style="text-align:center;">${it.tipe}</td></tr>`; });
+            w += `</tbody></table></body></html>`;
+            const blob = new Blob(['\ufeff', w], { type: 'application/msword' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `Paket_Soal_${document.getElementById('inputMapel').value}.doc`; link.click(); btn.innerHTML = "⬇️ DOWNLOAD WORD";
+        };
+
+        document.getElementById('btnSimpanSheets').onclick = async () => {
+            if(!savedSheetsUrl) return alert("URL Sheets belum disetel!"); const btn = document.getElementById('btnSimpanSheets'); const teksAsli = btn.innerHTML; btn.innerHTML = "⏳ Mengirim..."; btn.disabled = true;
+            try {
+                const formData = new URLSearchParams(); formData.append('dataPayload', JSON.stringify({ mapel: document.getElementById('inputMapel').value, guru: document.getElementById('inputGuru').value, soalArray: hasilGenerate }));
+                const res = await fetch(savedSheetsUrl, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: formData });
+                if ((await res.text()).includes("Sukses")) { alert("✅ Data sukses tersimpan di Google Sheets!"); } else { alert("⚠️ Respon Server: " + responseText); }
+            } catch(e) { alert("⚠️ Gagal mengirim data. Pastikan komputer terhubung internet. Error: " + e.message); }
+            btn.innerHTML = teksAsli; btn.disabled = false;
+        };
+    </script>
+</body>
+</html>
