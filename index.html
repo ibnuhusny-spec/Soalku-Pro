@@ -37,8 +37,45 @@
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">Pilih Model Gemini</label>
                         <select id="selectModel" class="w-full border rounded-lg p-3 outline-none bg-white">
-                            <option value="gemini-3-flash-preview" selected>gemini-3-flash-preview (Direkomendasikan)</option>
-                            <option value="custom">-- Ketik Model Manual --</option>
+                            <optgroup label="Daftar Model">
+                                <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+                                <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+                                <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+                                <option value="gemini-2.0-flash-001">gemini-2.0-flash-001</option>
+                                <option value="gemini-2.0-flash-lite-001">gemini-2.0-flash-lite-001</option>
+                                <option value="gemini-2.0-flash-lite">gemini-2.0-flash-lite</option>
+                                <option value="gemini-2.5-flash-preview-tts">gemini-2.5-flash-preview-tts</option>
+                                <option value="gemini-2.5-pro-preview-tts">gemini-2.5-pro-preview-tts</option>
+                                <option value="gemma-3-1b-it">gemma-3-1b-it</option>
+                                <option value="gemma-3-4b-it">gemma-3-4b-it</option>
+                                <option value="gemma-3-12b-it">gemma-3-12b-it</option>
+                                <option value="gemma-3-27b-it">gemma-3-27b-it</option>
+                                <option value="gemma-3n-e4b-it">gemma-3n-e4b-it</option>
+                                <option value="gemma-3n-e2b-it">gemma-3n-e2b-it</option>
+                                <option value="gemma-4-26b-a4b-it">gemma-4-26b-a4b-it</option>
+                                <option value="gemma-4-31b-it">gemma-4-31b-it</option>
+                                <option value="gemini-flash-latest">gemini-flash-latest</option>
+                                <option value="gemini-flash-lite-latest">gemini-flash-lite-latest</option>
+                                <option value="gemini-pro-latest">gemini-pro-latest</option>
+                                <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+                                <option value="gemini-2.5-flash-image">gemini-2.5-flash-image</option>
+                                <option value="gemini-3-pro-preview">gemini-3-pro-preview</option>
+                                <option value="gemini-3-flash-preview" selected>gemini-3-flash-preview (Direkomendasikan)</option>
+                                <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview</option>
+                                <option value="gemini-3.1-pro-preview-customtools">gemini-3.1-pro-preview-customtools</option>
+                                <option value="gemini-3.1-flash-lite-preview">gemini-3.1-flash-lite-preview</option>
+                                <option value="gemini-3-pro-image-preview">gemini-3-pro-image-preview</option>
+                                <option value="nano-banana-pro-preview">nano-banana-pro-preview</option>
+                                <option value="gemini-3.1-flash-image-preview">gemini-3.1-flash-image-preview</option>
+                                <option value="lyria-3-clip-preview">lyria-3-clip-preview</option>
+                                <option value="lyria-3-pro-preview">lyria-3-pro-preview</option>
+                                <option value="gemini-robotics-er-1.5-preview">gemini-robotics-er-1.5-preview</option>
+                                <option value="gemini-2.5-computer-use-preview-10-2025">gemini-2.5-computer-use-preview-10-2025</option>
+                                <option value="deep-research-pro-preview-12-2025">deep-research-pro-preview-12-2025</option>
+                            </optgroup>
+                            <optgroup label="Lainnya">
+                                <option value="custom">-- Ketik Model Manual --</option>
+                            </optgroup>
                         </select>
                     </div>
                     <div id="wrapperModelManual" class="hidden">
@@ -122,14 +159,14 @@
                             </div>
                         </div>
                         <div class="mb-4">
-                            <label class="block text-xs font-bold text-gray-700 mb-2">Level Kognitif</label>
+                            <label class="block text-xs font-bold text-gray-700 mb-2">Level Kognitif (Bisa pilih lebih dari satu)</label>
                             <div class="flex flex-wrap gap-3">
-                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C1"> C1</label>
-                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C2"> C2</label>
-                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C3" checked> C3</label>
-                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C4"> C4</label>
-                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C5"> C5</label>
-                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm"><input type="checkbox" class="chk-level w-4 h-4" value="C6"> C6</label>
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm cursor-pointer hover:bg-gray-50"><input type="checkbox" class="chk-level w-4 h-4" value="C1"> C1 (Mengingat)</label>
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm cursor-pointer hover:bg-gray-50"><input type="checkbox" class="chk-level w-4 h-4" value="C2"> C2 (Memahami)</label>
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm cursor-pointer hover:bg-gray-50"><input type="checkbox" class="chk-level w-4 h-4" value="C3" checked> C3 (Aplikasi)</label>
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm cursor-pointer hover:bg-gray-50"><input type="checkbox" class="chk-level w-4 h-4" value="C4"> C4 (Analisis)</label>
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm cursor-pointer hover:bg-gray-50"><input type="checkbox" class="chk-level w-4 h-4" value="C5"> C5 (Evaluasi)</label>
+                                <label class="flex items-center gap-1 text-sm bg-white px-2 py-1 border rounded shadow-sm cursor-pointer hover:bg-gray-50"><input type="checkbox" class="chk-level w-4 h-4" value="C6"> C6 (Mencipta)</label>
                             </div>
                         </div>
                         <button type="button" id="btnTambahModul" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2 px-4 rounded shadow transition">➕ Tambah Bagian Ini ke Struktur</button>
@@ -165,7 +202,7 @@
                     <div class="bg-gray-50 p-4 rounded-xl border flex flex-col md:flex-row justify-between gap-4 mb-6">
                         <div class="flex bg-white rounded-lg p-1 shadow-sm border w-full md:w-auto">
                             <button class="tab-hasil flex-1 md:flex-none px-4 py-2 text-sm font-bold border-b-2 border-blue-600 text-blue-600" data-target="soal">NASKAH</button>
-                            <button class="tab-hasil flex-1 md:flex-none px-4 py-2 text-sm font-bold text-gray-400" data-target="kunci">KUNCI</button>
+                            <button class="tab-hasil flex-1 md:flex-none px-4 py-2 text-sm font-bold text-gray-400" data-target="kunci">KUNCI (TABEL)</button>
                             <button class="tab-hasil flex-1 md:flex-none px-4 py-2 text-sm font-bold text-gray-400" data-target="kisi">KISI-KISI</button>
                         </div>
                         <div class="flex flex-wrap gap-2">
@@ -227,9 +264,8 @@
             try { return new Date(dateVal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); } catch(e) { return dateVal; }
         }
 
-        // ================= WEB BOOT (TANPA HWID LOCK) =================
+        // ================= WEB BOOT =================
         document.addEventListener('DOMContentLoaded', () => {
-            // Langsung menyalakan aplikasi tanpa mengecek HWID Electron
             document.getElementById('appUtama').classList.remove('hidden');
             setTimeout(() => { document.getElementById('splashScreen').classList.add('fade-out'); if(!savedApiKey) setTimeout(() => bukaPengaturan(false), 800); }, 2000);
             renderTabelStruktur();
@@ -281,12 +317,18 @@
         };
         document.getElementById('btnResetAll').onclick = () => { if(confirm("Yakin hapus semua pengaturan struktur?")) { strukturSoal = []; renderTabelStruktur(); } };
 
-        // ================= GEMINI AI LOGIC =================
+        // ================= GEMINI AI LOGIC (ANTI MACET VERCEL) =================
         document.getElementById('btnGenerateAI').onclick = async () => {
-            if(!savedApiKey) return bukaPengaturan(false);
+            if(!savedApiKey) {
+                alert("⚠️ API Key belum disetel! Harap masukkan API Key di menu Setting karena ini adalah web yang baru.");
+                return bukaPengaturan(false);
+            }
             const mapel = document.getElementById('inputMapel').value; const topik = document.getElementById('inputTopik').value; const kelas = document.getElementById('inputKelas').value;
             if(!topik) return alert("Topik Materi belum diisi!");
-            const btn = document.getElementById('btnGenerateAI'); btn.innerHTML = "MEMPROSES MULTI-MODUL AI... ⏳"; btn.disabled = true;
+            
+            const btn = document.getElementById('btnGenerateAI'); 
+            btn.innerHTML = "MEMPROSES MULTI-MODUL AI... ⏳ (15-30 detik)"; btn.disabled = true;
+            
             try {
                 const genAI = new GoogleGenerativeAI(savedApiKey); const model = genAI.getGenerativeModel({ model: savedModel });
                 let rincianModul = ""; let totalSoal = 0;
@@ -297,16 +339,33 @@
                 1. Jika ada teks Arab, WAJIB tulis dalam huruf Hijaiyah lengkap harakat.
                 2. Balas HANYA dengan 1 JSON Array murni yang berisi seluruh soal secara berurutan.
                 3. Struktur objek JSON wajib seperti ini:
-                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2"}]`;
-                const res = await model.generateContent(prompt);
-                hasilGenerate = JSON.parse(res.response.text().replace(/```json/gi, "").replace(/```/g, "").trim());
+                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2"}]
+                Catatan: Field "opsi" wajib array string (kosongkan [] jika tipe Uraian/Isian).`;
+
+                const res = await Promise.race([
+                    model.generateContent(prompt),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout dari server Gemini")), 45000))
+                ]);
+
+                const txtResponse = res.response.text();
+                const jsonText = txtResponse.replace(/```json/gi, "").replace(/```/g, "").trim();
+                
+                hasilGenerate = JSON.parse(jsonText);
                 hasilGenerate.forEach(it => it.manualImg = null);
-                document.querySelector('.nav-main-btn[data-target="view-laporan"]').click(); document.getElementById('pesanKosongLaporan').classList.add('hidden'); document.getElementById('areaHasil').classList.remove('hidden'); renderLaporan('soal');
-            } catch (e) { alert("Error API: " + e.message); }
-            btn.innerHTML = "MULAI GENERATE SOAL AI ✨"; btn.disabled = false;
+                
+                document.querySelector('.nav-main-btn[data-target="view-laporan"]').click(); 
+                document.getElementById('pesanKosongLaporan').classList.add('hidden'); 
+                document.getElementById('areaHasil').classList.remove('hidden'); 
+                renderLaporan('soal');
+            } catch (e) { 
+                console.error(e);
+                alert("❌ Gagal memproses soal!\n\nPenyebab mungkin:\n1. Internet lambat (Timeout).\n2. API Key salah.\n3. Model yang Anda pilih di Setting tidak mendukung fitur ini.\n\nSilakan coba lagi."); 
+            } finally {
+                btn.innerHTML = "MULAI GENERATE SOAL AI ✨"; btn.disabled = false;
+            }
         };
 
-        // ================= GAMBAR AI (FULL POWER WEB VERSION) =================
+        // ================= GAMBAR AI & MANUAL =================
         window.triggerUpload = (idx) => document.getElementById(`file-${idx}`).click();
         window.uploadGambar = (idx, input) => {
             if (input.files && input.files[0]) {
@@ -314,7 +373,7 @@
                 reader.onload = (e) => {
                     hasilGenerate[idx].manualImg = e.target.result;
                     document.getElementById(`img-preview-${idx}`).src = e.target.result; document.getElementById(`img-preview-${idx}`).style.display = 'block';
-                    document.getElementById(`box-upload-${idx}`).innerHTML = '📁 Ganti Manual';
+                    document.getElementById(`box-upload-${idx}`).innerHTML = '📁 Ganti Gambar';
                 };
                 reader.readAsDataURL(input.files[0]);
             }
@@ -330,11 +389,10 @@
                 const promptBersih = `Ilustrasi buku pelajaran sekolah anak, topik: ${topikMateri}. Gambar 2D, vektor, jelas, warna cerah, tanpa ada teks tulisan di dalam gambar.`;
                 const finalPrompt = encodeURIComponent(promptBersih);
                 
-                // Gunakan Fetch karena Vercel Web aman dari blokir File:// CORS
                 const imageUrl = `https://image.pollinations.ai/prompt/${finalPrompt}?width=512&height=512&nologo=true&seed=${Math.floor(Math.random() * 1000)}`;
                 
                 const controller = new AbortController();
-                const idTimeout = setTimeout(() => controller.abort(), 20000); // 20 detik strict timeout
+                const idTimeout = setTimeout(() => controller.abort(), 20000); 
 
                 const response = await fetch(imageUrl, { signal: controller.signal });
                 clearTimeout(idTimeout);
@@ -345,11 +403,11 @@
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     const base64data = reader.result;
-                    hasilGenerate[idx].manualImg = base64data; // Simpan base64 agar aman diexport Word
+                    hasilGenerate[idx].manualImg = base64data; 
                     
                     document.getElementById(`img-preview-${idx}`).src = base64data;
                     document.getElementById(`img-preview-${idx}`).style.display = 'block';
-                    document.getElementById(`box-upload-${idx}`).innerHTML = '📁 Ganti Manual';
+                    document.getElementById(`box-upload-${idx}`).innerHTML = '📁 Ganti Gambar';
                     
                     btn.innerHTML = "✨ Generate AI";
                     btn.disabled = false;
@@ -359,11 +417,8 @@
             } catch (error) {
                 btn.innerHTML = "✨ Coba Lagi";
                 btn.disabled = false;
-                if (error.name === 'AbortError') {
-                    alert("⏱️ Waktu Habis! Server gratis sedang padat. Silakan klik 'Coba Lagi' sebentar lagi.");
-                } else {
-                    alert("❌ Gagal terhubung. Pastikan internet Anda jalan, atau coba lagi nanti.");
-                }
+                if (error.name === 'AbortError') { alert("⏱️ Waktu Habis! Server gratis sedang padat. Silakan klik 'Coba Lagi' sebentar lagi."); } 
+                else { alert("❌ Gagal terhubung. Pastikan internet Anda jalan, atau coba lagi nanti."); }
             }
         };
 
@@ -387,12 +442,11 @@
                 hasilGenerate.forEach((it, i) => {
                     h += `<div class="p-5 bg-gray-50 rounded-xl border relative"><div class="mb-3"><span class="bg-blue-100 text-blue-800 text-[10px] font-black px-2 py-1 rounded tracking-wider uppercase">${it.tipe}</span></div><p class="text-lg text-gray-800" dir="ltr"><strong>${i+1}. </strong> ${wrapArabic(it.soal)}</p>`;
                     
-                    // TOMBOL GENERATE AI (AKTIF DI WEB)
                     h += `<div>
                             <img id="img-preview-${i}" src="${it.manualImg || ''}" class="img-preview" style="display: ${it.manualImg ? 'block' : 'none'}">
                             <div class="flex gap-2 mt-3 max-w-[320px]">
                                 <div id="box-upload-${i}" class="flex-1 p-2 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-200 text-xs font-bold text-gray-600 transition" onclick="triggerUpload(${i})">
-                                    ${it.manualImg ? '📁 Ganti Manual' : '📁 Upload Manual'}
+                                    ${it.manualImg ? '📁 Ganti Gambar' : '📁 Upload Manual'}
                                 </div>
                                 <button id="btn-ai-img-${i}" onclick="buatGambarAI(${i})" class="flex-1 p-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow transition transform active:scale-95">
                                     ✨ Generate AI
