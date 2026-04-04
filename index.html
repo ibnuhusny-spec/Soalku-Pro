@@ -15,6 +15,11 @@
         .img-preview { max-width: 300px; max-height: 200px; border-radius: 0.5rem; border: 1px solid #e2e8f0; object-fit: contain; display: none; margin-top: 10px; }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        /* Kustom Scrollbar untuk Daftar Model */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen relative overflow-x-hidden font-sans pb-20">
@@ -27,28 +32,24 @@
         </div>
 
         <div id="modalPengaturan" class="fixed inset-0 z-50 bg-black/60 hidden flex-col items-center justify-center p-4 backdrop-blur-sm">
-            <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
+            <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto custom-scroll">
                 <h2 class="text-2xl font-bold text-gray-800 mb-2">⚙️ Pengaturan Sistem</h2>
-                <div class="space-y-4 mt-6">
+                <div class="space-y-5 mt-6">
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">Google Gemini API Key <span class="text-red-500">*</span></label>
                         <input type="password" id="inputApiKey" placeholder="AIzaSy..." class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none">
                     </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1">Pilih Model Gemini</label>
-                        <select id="selectModel" class="w-full border rounded-lg p-3 outline-none bg-white">
-                            <optgroup label="Daftar Model Lengkap">
-                                <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-                                <option value="gemini-2.0-flash">gemini-2.0-flash</option>
-                                <option value="gemini-3-flash-preview" selected>gemini-3-flash-preview (Direkomendasikan)</option>
-                            </optgroup>
-                            <optgroup label="Lainnya">
-                                <option value="custom">-- Ketik Model Manual --</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    <div id="wrapperModelManual" class="hidden">
-                        <input type="text" id="inputModelManual" placeholder="misal: gemini-4.0" class="w-full border rounded-lg p-3">
+                    
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-inner">
+                        <label class="block text-sm font-bold text-gray-800 mb-2">Pilih Model Gemini</label>
+                        <div id="wadahDaftarModel" class="border border-gray-300 rounded-lg max-h-56 overflow-y-auto bg-white custom-scroll divide-y divide-gray-100">
+                            </div>
+                        <div class="text-right mt-2">
+                            <button type="button" id="btnModelManual" class="text-xs text-blue-600 hover:text-blue-800 font-bold underline transition">Atau Ketik Manual</button>
+                        </div>
+                        <div id="wrapperModelManual" class="hidden mt-2">
+                            <input type="text" id="inputModelManual" placeholder="misal: gemini-4.0" class="w-full border rounded-lg p-2 text-sm focus:border-blue-500 outline-none">
+                        </div>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -179,7 +180,7 @@
                         </div>
                     </label>
                     <div class="flex items-center gap-3 w-full md:w-auto">
-                        <button type="button" id="btnResetAll" class="text-red-500 hover:text-red-700 font-bold px-4 py-2 transition border border-red-200 rounded-lg hover:bg-red-50 w-full md:w-auto">🗑️ Reset Semua</button>
+                        <button type="button" id="btnResetAll" class="text-red-500 hover:text-red-700 font-bold px-4 py-2 transition border border-red-200 rounded-lg hover:bg-red-50 w-full md:w-auto text-center">🗑️ Reset Semua</button>
                         <button type="button" id="btnGenerateAI" class="bg-blue-600 hover:bg-blue-800 text-white font-black py-4 px-8 rounded-xl shadow-xl transition transform active:scale-95 text-lg w-full md:w-auto" disabled>MULAI GENERATE SOAL ✨</button>
                     </div>
                 </div>
@@ -208,6 +209,9 @@
             </div>
 
             <div id="view-info" class="view-section hidden bg-white p-6 md:p-8 rounded-b-2xl shadow-md border border-t-0 border-gray-200">
+                <div class="border-b-2 border-dashed border-gray-200 pb-6 mb-6">
+                    <h2 class="text-3xl font-black text-blue-900 mb-2">📚 Panduan Resmi Soalku Web</h2>
+                </div>
                 <div class="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <div class="h-10 w-10 bg-blue-900 rounded-full flex items-center justify-center text-white font-black text-xl shadow-lg">IH</div>
@@ -250,6 +254,22 @@
         
         let strukturSoal = []; let hasilGenerate = []; let kuisTimeout;
 
+        const daftarModelAI = [
+            "gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-001",
+            "gemini-2.0-flash-lite-001", "gemini-2.0-flash-lite", "gemini-2.5-flash-preview-tts",
+            "gemini-2.5-pro-preview-tts", "gemma-3-1b-it", "gemma-3-4b-it", "gemma-3-12b-it",
+            "gemma-3-27b-it", "gemma-3n-e4b-it", "gemma-3n-e2b-it", "gemma-4-26b-a4b-it",
+            "gemma-4-31b-it", "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-pro-latest",
+            "gemini-2.5-flash-lite", "gemini-2.5-flash-image", "gemini-3-pro-preview",
+            "gemini-3-flash-preview", "gemini-3.1-pro-preview", "gemini-3.1-pro-preview-customtools",
+            "gemini-3.1-flash-lite-preview", "gemini-3-pro-image-preview", "nano-banana-pro-preview",
+            "gemini-3.1-flash-image-preview", "lyria-3-clip-preview", "lyria-3-pro-preview",
+            "gemini-robotics-er-1.5-preview", "gemini-2.5-computer-use-preview-10-2025",
+            "deep-research-pro-preview-12-2025"
+        ];
+        
+        let tempSelectedModel = savedModel;
+
         function getFormattedDate() {
             const dateVal = document.getElementById('inputTanggal').value;
             if (!dateVal) return '';
@@ -273,7 +293,42 @@
             renderTabelStruktur();
         });
 
-        // ================= UI & SETTING =================
+        // ================= UI SETTING (MODEL TABLE) =================
+        function renderDaftarModel() {
+            const wadah = document.getElementById('wadahDaftarModel');
+            let html = '';
+            let found = false;
+            daftarModelAI.forEach(m => {
+                const isSelected = (m === tempSelectedModel);
+                if (isSelected) found = true;
+                html += `
+                <div class="flex justify-between items-center p-3 hover:bg-gray-50 transition cursor-pointer" onclick="pilihModel('${m}')">
+                    <span class="text-sm font-mono ${isSelected ? 'text-green-700 font-bold' : 'text-gray-600'}">${m}</span>
+                    <button type="button" class="px-3 py-1 rounded text-xs font-bold transition ${isSelected ? 'bg-green-500 text-white shadow-md' : 'bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white'}">
+                        ${isSelected ? '✅ Terpilih' : 'Pilih'}
+                    </button>
+                </div>`;
+            });
+            wadah.innerHTML = html;
+            
+            if (!found && tempSelectedModel) {
+                document.getElementById('wrapperModelManual').classList.remove('hidden');
+                document.getElementById('inputModelManual').value = tempSelectedModel;
+            } else {
+                document.getElementById('wrapperModelManual').classList.add('hidden');
+                document.getElementById('inputModelManual').value = "";
+            }
+        }
+
+        window.pilihModel = (modelName) => {
+            tempSelectedModel = modelName;
+            renderDaftarModel();
+        };
+
+        document.getElementById('btnModelManual').onclick = () => {
+            document.getElementById('wrapperModelManual').classList.toggle('hidden');
+        };
+
         document.querySelectorAll('.nav-main-btn').forEach(btn => {
             btn.onclick = (e) => {
                 document.querySelectorAll('.nav-main-btn').forEach(x => { x.classList.remove('border-blue-600', 'text-blue-700'); x.classList.add('border-transparent', 'text-gray-500'); });
@@ -289,23 +344,38 @@
             document.getElementById('inputApiKey').value = savedApiKey; document.getElementById('inputSheetsUrl').value = savedSheetsUrl;
             document.getElementById('inputPixabayKey').value = savedPixabayKey; document.getElementById('inputPexelsKey').value = savedPexelsKey;
             
-            let found = false; for(let opt of document.getElementById('selectModel').options) { if(opt.value === savedModel) { document.getElementById('selectModel').value = savedModel; found = true; break; } }
-            if(!found && savedModel) { document.getElementById('selectModel').value = 'custom'; document.getElementById('wrapperModelManual').classList.remove('hidden'); document.getElementById('inputModelManual').value = savedModel; }
-            document.getElementById('btnTutupPengaturan').style.display = bisaBatal ? 'block' : 'none'; modalPengaturan.classList.remove('hidden'); modalPengaturan.classList.add('flex');
+            tempSelectedModel = savedModel;
+            renderDaftarModel();
+            
+            document.getElementById('btnTutupPengaturan').style.display = bisaBatal ? 'block' : 'none'; 
+            document.getElementById('modalPengaturan').classList.remove('hidden'); 
+            document.getElementById('modalPengaturan').classList.add('flex');
         }
+        
         document.getElementById('btnBukaPengaturan').onclick = () => bukaPengaturan(true);
-        document.getElementById('btnTutupPengaturan').onclick = () => { modalPengaturan.classList.remove('flex'); modalPengaturan.classList.add('hidden'); };
+        document.getElementById('btnTutupPengaturan').onclick = () => { document.getElementById('modalPengaturan').classList.remove('flex'); document.getElementById('modalPengaturan').classList.add('hidden'); };
+        
         document.getElementById('btnSimpanPengaturan').onclick = () => {
-            const key = document.getElementById('inputApiKey').value.trim(); let mdl = document.getElementById('selectModel').value; if(mdl === 'custom') mdl = document.getElementById('inputModelManual').value.trim() || "gemini-3-flash-preview";
+            const key = document.getElementById('inputApiKey').value.trim(); 
+            
+            let mdl = tempSelectedModel;
+            const manualInput = document.getElementById('inputModelManual').value.trim();
+            if(!document.getElementById('wrapperModelManual').classList.contains('hidden') && manualInput !== "") {
+                mdl = manualInput;
+            }
+            
             const pxb = document.getElementById('inputPixabayKey').value.trim(); const pxls = document.getElementById('inputPexelsKey').value.trim();
-            if(!key || !mdl) return alert("API Key wajib diisi!");
-            localStorage.setItem('soalku_apiKey', key); localStorage.setItem('soalku_aiModel', mdl); localStorage.setItem('soalku_sheetsUrl', document.getElementById('inputSheetsUrl').value.trim());
+            
+            if(!key || !mdl) return alert("API Key dan Model wajib diisi!");
+            
+            localStorage.setItem('soalku_apiKey', key); localStorage.setItem('soalku_aiModel', mdl); localStorage.setItem('soalku_sheetsUrl', document.getElementById('inputSheetsUrl').value.trim()); 
             localStorage.setItem('soalku_pixabayKey', pxb); localStorage.setItem('soalku_pexelsKey', pxls);
             savedApiKey = key; savedModel = mdl; savedSheetsUrl = localStorage.getItem('soalku_sheetsUrl'); savedPixabayKey = pxb; savedPexelsKey = pxls;
-            modalPengaturan.classList.remove('flex'); modalPengaturan.classList.add('hidden');
+            
+            document.getElementById('modalPengaturan').classList.remove('flex'); document.getElementById('modalPengaturan').classList.add('hidden');
         };
 
-        // ================= BUILDER =================
+        // ================= BUILDER LOGIC =================
         document.getElementById('modTipe').onchange = (e) => { document.getElementById('wrapperOpsiPG').style.display = e.target.value.includes("Pilihan Ganda") || e.target.value === "PG Kompleks" ? 'block' : 'none'; };
         function renderTabelStruktur() {
             const tbody = document.getElementById('tabelStruktur');
@@ -321,6 +391,7 @@
             if(jumlah < 1 || isNaN(jumlah)) return alert("Jumlah minimal 1!"); if(!levels) return alert("Pilih minimal 1 Level Kognitif!");
             strukturSoal.push({ tipe, jumlah, sulit, level: levels, opsi: tipe.includes("PG") ? parseInt(opsi) : null }); renderTabelStruktur();
         };
+        
         document.getElementById('btnResetAll').onclick = () => { 
             if(confirm("Yakin hapus semua pengaturan struktur dan reset identitas?")) { 
                 strukturSoal = []; renderTabelStruktur(); 
@@ -332,7 +403,6 @@
         // ================= DUAL ENGINE FETCH LOGIC =================
         async function fetchDualEngine(keyword) {
             let urls = [];
-            // 1. Try Pixabay
             if (savedPixabayKey) {
                 try {
                     const res = await fetch(`https://pixabay.com/api/?key=${savedPixabayKey}&q=${encodeURIComponent(keyword)}&image_type=illustration&per_page=5&safesearch=true`);
@@ -340,7 +410,6 @@
                     if (data.hits) data.hits.forEach(h => urls.push(h.webformatURL));
                 } catch(e) { console.log("Pixabay fail"); }
             }
-            // 2. Try Pexels if Pixabay returns nothing
             if (savedPexelsKey && urls.length === 0) {
                 try {
                     const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(keyword)}&per_page=5`, { headers: { Authorization: savedPexelsKey }});
@@ -351,7 +420,7 @@
             return urls;
         }
 
-        // ================= GEMINI AI & AUTO-GAMBAR (DUAL ENGINE) =================
+        // ================= GEMINI AI & AUTO-GAMBAR (ANTI MACET VERCEL) =================
         document.getElementById('btnGenerateAI').onclick = async () => {
             if(!savedApiKey) { alert("⚠️ API Key belum disetel!"); return bukaPengaturan(false); }
             
@@ -378,7 +447,7 @@
                 1. Jika ada teks Arab, WAJIB tulis dalam huruf Hijaiyah lengkap harakat.
                 2. Balas HANYA dengan 1 JSON Array murni yang berisi seluruh soal secara berurutan.
                 3. Struktur objek JSON wajib seperti ini:
-                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2", "keyword_gambar": "1 atau 2 kata benda (noun) bahasa Inggris paling spesifik mewakili objek utama di soal (contoh: 'mosque', 'apple', 'student studying')"}]
+                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2 (Memahami)", "keyword_gambar": "1 atau 2 kata benda (noun) bahasa Inggris paling spesifik mewakili objek utama di soal (contoh: 'mosque', 'apple', 'student studying')"}]
                 Catatan: Field "opsi" wajib array string (kosongkan [] jika tipe Uraian/Isian).`;
 
                 const res = await Promise.race([
@@ -426,7 +495,7 @@
             }
         };
 
-        // ================= GAMBAR MANUAL & GANTI (DUAL ENGINE) =================
+        // ================= GAMBAR MANUAL & GANTI =================
         window.triggerUpload = (idx) => document.getElementById(`file-${idx}`).click();
         window.uploadGambar = (idx, input) => {
             if (input.files && input.files[0]) {
@@ -497,12 +566,11 @@
                 hasilGenerate.forEach((it, i) => {
                     h += `<div class="p-5 bg-gray-50 rounded-xl border relative"><div class="mb-3"><span class="bg-blue-100 text-blue-800 text-[10px] font-black px-2 py-1 rounded tracking-wider uppercase">${it.tipe}</span></div><p class="text-lg text-gray-800" dir="ltr"><strong>${i+1}. </strong> ${wrapArabic(it.soal)}</p>`;
                     
-                    // TOMBOL SEARCH DUAL ENGINE
                     h += `<div>
                             <img id="img-preview-${i}" src="${it.manualImg || ''}" class="img-preview" style="display: ${it.manualImg ? 'block' : 'none'}">
                             <div class="flex gap-2 mt-3 max-w-[320px]">
                                 <div id="box-upload-${i}" class="flex-1 p-2 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-200 text-xs font-bold text-gray-600 transition" onclick="triggerUpload(${i})">
-                                    ${it.manualImg ? '📁 Ganti Manual' : '📁 Upload Manual'}
+                                    📁 Upload Manual
                                 </div>
                                 <button id="btn-ai-img-${i}" onclick="gantiAtauCariGambar(${i})" class="flex-1 p-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow transition transform active:scale-95">
                                     ${it.manualImg ? '🔄 Ganti (Mesin Ganda)' : '🔍 Cari Gambar Otomatis'}
