@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soalku Web - Generator Evaluasi AI</title>
+    <title>Soalku Pro - Generator Evaluasi AI</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .font-arab { font-family: 'Arabic Typesetting', 'Traditional Arabic', serif; font-size: 1.7rem; line-height: 1.6; color: #1e3a8a; padding: 0 4px; }
         #modalKuis .font-arab { font-size: 1.6em; line-height: 1.4; }
         .fade-out { opacity: 0; visibility: hidden; transition: opacity 0.8s ease-out, visibility 0.8s; }
-        .img-upload-box { border: 2px dashed #cbd5e1; background-color: #f8fafc; border-radius: 0.5rem; text-align: center; padding: 1rem; cursor: pointer; transition: all 0.2s; max-width: 300px; margin-top: 10px; }
-        .img-upload-box:hover { border-color: #3b82f6; background-color: #eff6ff; }
         .img-preview { max-width: 300px; max-height: 200px; border-radius: 0.5rem; border: 1px solid #e2e8f0; object-fit: contain; display: none; margin-top: 10px; }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -24,11 +22,31 @@
 </head>
 <body class="bg-gray-100 min-h-screen relative overflow-x-hidden font-sans pb-20">
 
+    <div id="layarAktivasi" class="fixed inset-0 z-[200] bg-slate-900 flex flex-col items-center justify-center p-6 backdrop-blur-sm hidden">
+        <div class="bg-slate-800 p-10 rounded-2xl shadow-2xl border-2 border-teal-500 text-center w-full max-w-lg">
+            <img src="logo.png" class="h-24 w-auto mx-auto mb-6" onerror="this.style.display='none'">
+            <h1 class="text-3xl font-black text-white tracking-tighter mb-2">Soalku <span class="text-yellow-400">Pro</span></h1>
+            <p class="text-teal-400 font-mono text-xs tracking-wider mb-10">Modular AI Assessment Builder</p>
+            <div id="wrapperAktivasiBelumAktif">
+                <h2 class="text-xl font-bold text-gray-200 mb-6 border-b-2 border-dashed border-gray-600 pb-3">🔑 Aktivasi Perangkat</h2>
+                <p class="text-sm text-gray-400 mb-2">ID Perangkat Anda (HWID):</p>
+                <input type="text" id="hwidTampil" value="Memuat HWID...⏳" readonly class="w-full border-0 bg-slate-700 rounded-lg p-3 text-sm text-teal-400 font-mono text-center mb-6 shadow-inner tracking-widest">
+                <p class="text-sm text-gray-200 font-bold mb-2">Masukkan Kode Aktivasi:</p>
+                <input type="text" id="inputAktivasi" placeholder="XXXX-XXXX-XXXX-XXXX" class="w-full border-2 border-yellow-500 rounded-xl p-4 text-2xl bg-white text-gray-900 font-bold text-center mb-6 tracking-widest shadow-xl uppercase">
+                <button id="btnAktivasi" class="w-full bg-teal-500 hover:bg-teal-600 text-slate-900 font-black text-lg p-4 rounded-xl transition duration-150 transform active:scale-95 shadow-lg">BUKA KUNCI APLIKASI</button>
+            </div>
+            <div id="wrapperAktivasiError" class="hidden">
+                <div class="text-6xl mb-4">⚠️</div>
+                <h2 class="text-2xl font-black text-red-500 mb-4">ERROR SISTEM LISENSI</h2>
+                <p class="text-gray-300 mb-6 leading-relaxed">Silakan jalankan melalui <b class="text-white">Aplikasi Desktop Soalku Pro (.exe)</b>.</p>
+            </div>
+        </div>
+    </div>
+
     <div id="appUtama" class="hidden">
-        
         <div id="splashScreen" class="fixed inset-0 z-[100] bg-gradient-to-br from-blue-900 via-indigo-800 to-blue-900 flex flex-col items-center justify-center text-center p-6">
             <img src="logo.png" alt="Logo" class="h-32 w-auto mb-6 animate-bounce" onerror="this.style.display='none'">
-            <h1 class="text-5xl md:text-6xl font-extrabold text-white tracking-tight mb-2 drop-shadow-lg">Soalku <span class="text-yellow-400">Web</span></h1>
+            <h1 class="text-5xl md:text-6xl font-extrabold text-white tracking-tight mb-2 drop-shadow-lg">Soalku <span class="text-yellow-400">Pro</span></h1>
             <p class="text-blue-200 text-lg md:text-xl font-medium tracking-wide">Modular AI Assessment Builder</p>
         </div>
 
@@ -81,12 +99,10 @@
         <div class="max-w-6xl mx-auto mt-4 md:mt-8 p-2 md:p-4">
             <div class="bg-white rounded-t-2xl shadow-sm border-b-4 border-blue-600 overflow-hidden">
                 <div class="p-6 flex items-center justify-between bg-gradient-to-r from-blue-800 to-indigo-900">
-                    
                     <div class="flex items-center gap-4">
-                        <img src="logo.png" alt="Logo" class="h-12 w-auto bg-white p-1 rounded" onerror="this.style.display='none'">
-                        <div><h1 class="text-2xl font-extrabold text-white tracking-tight">Soalku <span class="text-yellow-400">Web</span></h1></div>
+                        <img src="logo.png" class="h-12 w-auto bg-white p-1 rounded" onerror="this.style.display='none'">
+                        <div><h1 class="text-2xl font-extrabold text-white tracking-tight">Soalku <span class="text-yellow-400">Pro</span></h1></div>
                     </div>
-
                     <button id="btnBukaPengaturan" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-sm font-bold border border-white/20 transition">⚙️ Setting</button>
                 </div>
                 <nav class="flex overflow-x-auto bg-white border-b">
@@ -213,7 +229,7 @@
 
             <div id="view-info" class="view-section hidden bg-white p-6 md:p-8 rounded-b-2xl shadow-md border border-t-0 border-gray-200">
                 <div class="border-b-2 border-dashed border-gray-200 pb-6 mb-6">
-                    <h2 class="text-3xl font-black text-blue-900 mb-2">📚 Panduan Resmi Soalku Web</h2>
+                    <h2 class="text-3xl font-black text-blue-900 mb-2">📚 Panduan Resmi Soalku Pro</h2>
                 </div>
                 
                 <div class="space-y-6 text-gray-700 mt-6">
@@ -227,7 +243,7 @@
                     </div>
                     <div class="bg-purple-50 p-5 rounded-xl border border-purple-200 shadow-sm">
                         <h3 class="text-lg font-bold text-purple-800 mb-3 flex items-center"><span class="bg-purple-600 text-white px-3 py-1 rounded-lg text-sm mr-3">2</span>Fitur Gambar AI (Mesin Ganda)</h3>
-                        <p class="text-sm leading-relaxed mb-3">Soalku Web kini dilengkapi mesin pencari gambar otomatis yang cerdas:</p>
+                        <p class="text-sm leading-relaxed mb-3">Soalku Pro kini dilengkapi mesin pencari gambar otomatis yang cerdas:</p>
                         <ul class="list-disc pl-6 text-sm space-y-2 text-purple-900 font-medium">
                             <li>Centang <b>"Mode Soal Bergambar"</b> di Menu Utama sebelum men-generate soal untuk memuat gambar secara instan.</li>
                             <li>Jika gambar dirasa kurang cocok, masuk ke tab Naskah lalu klik tombol <b>"🔄 Ganti (Mesin Ganda)"</b> pada masing-masing soal. Aplikasi akan otomatis mencari alternatif terbaik dari Pixabay maupun Pexels.</li>
@@ -243,7 +259,7 @@
                             <p class="text-xs text-gray-500 font-medium">SDIT Qurratu A’yun Al-Islami Maros</p>
                         </div>
                     </div>
-                    <span class="bg-blue-600 text-white text-xs font-mono px-3 py-1.5 rounded shadow">Web Edition (Vercel)</span>
+                    <span class="bg-gray-800 text-white text-xs font-mono px-3 py-1.5 rounded shadow">Desktop Edition</span>
                 </div>
             </div>
         </div>
@@ -272,8 +288,8 @@
         let savedApiKey = localStorage.getItem('soalku_apiKey') || "";
         let savedModel = localStorage.getItem('soalku_aiModel') || "gemini-3-flash-preview";
         let savedSheetsUrl = localStorage.getItem('soalku_sheetsUrl') || ""; 
-        let savedPixabayKey = localStorage.getItem('soalku_pixabayKey') || ""; 
-        let savedPexelsKey = localStorage.getItem('soalku_pexelsKey') || ""; 
+        let savedPixabayKey = localStorage.getItem('soalku_pixabayKey') || "";
+        let savedPexelsKey = localStorage.getItem('soalku_pexelsKey') || "";
         
         let strukturSoal = []; let hasilGenerate = []; let kuisTimeout;
 
@@ -299,7 +315,7 @@
             try { return new Date(dateVal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); } catch(e) { return dateVal; }
         }
 
-        // ================= AUTO SAVE & TOGGLE =================
+        // ================= AUTO SAVE IDENTITAS =================
         const idInputs = ['inputSekolah', 'inputGuru', 'inputKelas', 'inputMapel'];
         function muatIdentitas() {
             idInputs.forEach(id => { const saved = localStorage.getItem('soalku_' + id); if(saved !== null) document.getElementById(id).value = saved; });
@@ -308,15 +324,46 @@
         idInputs.forEach(id => { document.getElementById(id).addEventListener('input', (e) => { localStorage.setItem('soalku_' + id, e.target.value); }); });
         document.getElementById('toggleAutoImage').addEventListener('change', (e) => { localStorage.setItem('soalku_autoImg', e.target.checked); });
 
-        // ================= WEB BOOT =================
+        // ================= HWID LOCK =================
+        const secretSaltKlien = "SOALKUPRO_IBNU_2026"; 
         document.addEventListener('DOMContentLoaded', () => {
-            muatIdentitas();
-            document.getElementById('appUtama').classList.remove('hidden');
-            setTimeout(() => { document.getElementById('splashScreen').classList.add('fade-out'); if(!savedApiKey) setTimeout(() => bukaPengaturan(false), 800); }, 2000);
-            renderTabelStruktur();
+            const statusAktif = localStorage.getItem('soalku_is_activated');
+            if (typeof window.electronAPI === 'undefined') {
+                document.getElementById('layarAktivasi').classList.remove('hidden'); document.getElementById('wrapperAktivasiBelumAktif').classList.add('hidden'); document.getElementById('wrapperAktivasiError').classList.remove('hidden'); return; 
+            }
+            if (statusAktif === secretSaltKlien) {
+                document.getElementById('appUtama').classList.remove('hidden'); document.getElementById('layarAktivasi').classList.add('hidden'); mulaiAplikasiNormal();
+            } else {
+                document.getElementById('layarAktivasi').classList.remove('hidden'); tampilkanHwid();
+            }
         });
 
-        // ================= UI SETTING (MODEL TABLE) =================
+        async function tampilkanHwid() {
+            const hWIDTampil = document.getElementById('hwidTampil');
+            try { hWIDTampil.value = (await window.electronAPI.getHwid()).toUpperCase(); } catch (e) { hWIDTampil.value = "ERROR"; }
+            document.getElementById('btnAktivasi').onclick = async () => {
+                const inputUser = document.getElementById('inputAktivasi').value.trim().toUpperCase(); const currentHwid = hWIDTampil.value;
+                if (!inputUser) return;
+                document.getElementById('btnAktivasi').innerHTML = "⏳"; document.getElementById('btnAktivasi').disabled = true;
+                try {
+                    const dataRaw = new TextEncoder().encode(currentHwid + secretSaltKlien);
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', dataRaw);
+                    const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+                    const kunciSeharusnya = hashHex.substring(0, 16).match(/.{1,4}/g).join('-');
+                    await new Promise(r => setTimeout(r, 1000));
+                    if (inputUser === kunciSeharusnya) { localStorage.setItem('soalku_is_activated', secretSaltKlien); location.reload(); } else { alert("❌ Kode Aktivasi SALAH!"); }
+                } catch (e) { alert("Error: " + e.message); }
+                document.getElementById('btnAktivasi').innerHTML = "BUKA KUNCI APLIKASI"; document.getElementById('btnAktivasi').disabled = false;
+            };
+        }
+
+        function mulaiAplikasiNormal() {
+            muatIdentitas();
+            setTimeout(() => { document.getElementById('splashScreen').classList.add('fade-out'); if(!savedApiKey) setTimeout(() => bukaPengaturan(false), 800); }, 2000);
+            renderTabelStruktur();
+        }
+
+        // ================= UI SETTING =================
         function renderDaftarModel() {
             const wadah = document.getElementById('wadahDaftarModel');
             let html = '';
@@ -360,9 +407,6 @@
             };
         });
 
-        const modalPengaturan = document.getElementById('modalPengaturan');
-        document.getElementById('selectModel').onchange = (e) => document.getElementById('wrapperModelManual').classList.toggle('hidden', e.target.value !== 'custom');
-        
         function bukaPengaturan(bisaBatal = true) {
             document.getElementById('inputApiKey').value = savedApiKey; 
             document.getElementById('inputSheetsUrl').value = savedSheetsUrl;
@@ -372,13 +416,14 @@
             tempSelectedModel = savedModel;
             renderDaftarModel();
             
+            const modalPengaturan = document.getElementById('modalPengaturan');
             document.getElementById('btnTutupPengaturan').style.display = bisaBatal ? 'block' : 'none'; 
             modalPengaturan.classList.remove('hidden'); 
             modalPengaturan.classList.add('flex');
         }
         
         document.getElementById('btnBukaPengaturan').onclick = () => bukaPengaturan(true);
-        document.getElementById('btnTutupPengaturan').onclick = () => { modalPengaturan.classList.remove('flex'); modalPengaturan.classList.add('hidden'); };
+        document.getElementById('btnTutupPengaturan').onclick = () => { document.getElementById('modalPengaturan').classList.remove('flex'); document.getElementById('modalPengaturan').classList.add('hidden'); };
         
         document.getElementById('btnSimpanPengaturan').onclick = () => {
             const key = document.getElementById('inputApiKey').value.trim(); 
@@ -397,7 +442,7 @@
             localStorage.setItem('soalku_pixabayKey', pxb); localStorage.setItem('soalku_pexelsKey', pxls);
             savedApiKey = key; savedModel = mdl; savedSheetsUrl = localStorage.getItem('soalku_sheetsUrl'); savedPixabayKey = pxb; savedPexelsKey = pxls;
             
-            modalPengaturan.classList.remove('flex'); modalPengaturan.classList.add('hidden');
+            document.getElementById('modalPengaturan').classList.remove('flex'); document.getElementById('modalPengaturan').classList.add('hidden');
         };
 
         // ================= BUILDER LOGIC =================
@@ -425,29 +470,9 @@
             } 
         };
 
-        // ================= DUAL ENGINE FETCH LOGIC =================
-        async function fetchDualEngine(keyword) {
-            let urls = [];
-            if (savedPixabayKey) {
-                try {
-                    const res = await fetch(`https://pixabay.com/api/?key=${savedPixabayKey}&q=${encodeURIComponent(keyword)}&image_type=illustration&per_page=5&safesearch=true`);
-                    const data = await res.json();
-                    if (data.hits) data.hits.forEach(h => urls.push(h.webformatURL));
-                } catch(e) { console.log("Pixabay fail"); }
-            }
-            if (savedPexelsKey && urls.length === 0) {
-                try {
-                    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(keyword)}&per_page=5`, { headers: { Authorization: savedPexelsKey }});
-                    const data = await res.json();
-                    if (data.photos) data.photos.forEach(p => urls.push(p.src.medium));
-                } catch(e) { console.log("Pexels fail"); }
-            }
-            return urls;
-        }
-
-        // ================= GEMINI AI & AUTO-GAMBAR (ANTI MACET VERCEL) =================
+        // ================= GEMINI AI LOGIC (DESKTOP) =================
         document.getElementById('btnGenerateAI').onclick = async () => {
-            if(!savedApiKey) { alert("⚠️ API Key belum disetel!"); return bukaPengaturan(false); }
+            if(!savedApiKey) return bukaPengaturan(false);
             
             const isAutoImage = document.getElementById('toggleAutoImage').checked;
             if(isAutoImage && !savedPixabayKey && !savedPexelsKey) {
@@ -457,10 +482,7 @@
 
             const mapel = document.getElementById('inputMapel').value; const topik = document.getElementById('inputTopik').value; const kelas = document.getElementById('inputKelas').value;
             if(!topik) return alert("Topik Materi belum diisi!");
-            
-            const btn = document.getElementById('btnGenerateAI'); 
-            btn.innerHTML = "MEMPROSES MULTI-MODUL AI... ⏳ (15-30 dtk)"; btn.disabled = true;
-            
+            const btn = document.getElementById('btnGenerateAI'); btn.innerHTML = "MEMPROSES MULTI-MODUL AI... ⏳ (15-30 dtk)"; btn.disabled = true;
             try {
                 const genAI = new GoogleGenerativeAI(savedApiKey); const model = genAI.getGenerativeModel({ model: savedModel });
                 let rincianModul = ""; let totalSoal = 0;
@@ -472,9 +494,9 @@
                 1. Jika ada teks Arab, WAJIB tulis dalam huruf Hijaiyah lengkap harakat.
                 2. Balas HANYA dengan 1 JSON Array murni yang berisi seluruh soal secara berurutan.
                 3. Struktur objek JSON wajib seperti ini:
-                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2 (Memahami)", "keyword_gambar": "1 atau 2 kata benda (noun) bahasa Inggris paling spesifik mewakili objek utama di soal (contoh: 'mosque', 'apple', 'student studying')"}]
+                [{"id": 1, "tipe": "Pilihan Ganda", "soal": "Teks pertanyaan...", "opsi": ["A. x", "B. y"], "jawaban": "A. x", "level": "C2", "keyword_gambar": "1-2 kata benda bahasa Inggris yang mewakili visual soal ini untuk pencarian gambar"}]
                 Catatan: Field "opsi" wajib array string (kosongkan [] jika tipe Uraian/Isian).`;
-
+                
                 const res = await Promise.race([
                     model.generateContent(prompt),
                     new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout dari server Gemini")), 45000))
@@ -510,7 +532,7 @@
                 } else {
                     hasilGenerate.forEach(it => { it.manualImg = null; it.imagePool = []; it.currentImgIdx = -1; });
                 }
-                
+
                 document.querySelector('.nav-main-btn[data-target="view-laporan"]').click(); document.getElementById('pesanKosongLaporan').classList.add('hidden'); document.getElementById('areaHasil').classList.remove('hidden'); renderLaporan('soal');
             } catch (e) { 
                 console.error(e);
@@ -520,7 +542,7 @@
             }
         };
 
-        // ================= GAMBAR MANUAL & GANTI =================
+        // ================= DUAL ENGINE IMAGE SEARCH LOGIC =================
         window.triggerUpload = (idx) => document.getElementById(`file-${idx}`).click();
         window.uploadGambar = (idx, input) => {
             if (input.files && input.files[0]) {
@@ -528,35 +550,55 @@
                 reader.onload = (e) => {
                     hasilGenerate[idx].manualImg = e.target.result;
                     document.getElementById(`img-preview-${idx}`).src = e.target.result; document.getElementById(`img-preview-${idx}`).style.display = 'block';
-                    document.getElementById(`btn-ai-img-${idx}`).innerHTML = "🔄 Ganti (Mesin Ganda)";
+                    document.getElementById(`btn-ai-img-${idx}`).innerHTML = '🔄 Ganti Gambar Otomatis';
                 };
                 reader.readAsDataURL(input.files[0]);
             }
         };
 
+        async function fetchDualEngine(keyword) {
+            let urls = [];
+            if (savedPixabayKey) {
+                try {
+                    const res = await fetch(`https://pixabay.com/api/?key=${savedPixabayKey}&q=${encodeURIComponent(keyword)}&image_type=illustration&per_page=5&safesearch=true`);
+                    const data = await res.json();
+                    if (data.hits) data.hits.forEach(h => urls.push(h.webformatURL));
+                } catch(e) { console.log("Pixabay fail"); }
+            }
+            if (savedPexelsKey && urls.length === 0) {
+                try {
+                    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(keyword)}&per_page=5`, { headers: { Authorization: savedPexelsKey }});
+                    const data = await res.json();
+                    if (data.photos) data.photos.forEach(p => urls.push(p.src.medium));
+                } catch(e) { console.log("Pexels fail"); }
+            }
+            return urls;
+        }
+
         window.gantiAtauCariGambar = async (idx) => {
             const it = hasilGenerate[idx];
-            if(!savedPixabayKey && !savedPexelsKey) { alert("⚠️ Anda belum memasukkan API Key untuk mesin pencari gambar (Pixabay atau Pexels) di Setting!"); return bukaPengaturan(true); }
-
+            if(!savedPixabayKey && !savedPexelsKey) { alert("⚠️ Anda belum memasukkan API Key pencari gambar di Setting!"); return bukaPengaturan(true); }
+            
             const btn = document.getElementById(`btn-ai-img-${idx}`);
-            btn.innerHTML = "⏳ Mencari... (Dual Engine)"; btn.disabled = true;
+            btn.innerHTML = "⏳ Mencari...";
+            btn.disabled = true;
 
             try {
                 if (!it.imagePool || it.imagePool.length === 0) {
                     const keyword = it.keyword_gambar || "education";
                     it.imagePool = await fetchDualEngine(keyword);
-                    if (it.imagePool.length === 0) throw new Error(`Gambar topik "${keyword}" tidak ditemukan di kedua mesin.`);
-                    it.currentImgIdx = -1; 
+                    if (it.imagePool.length === 0) throw new Error(`Gambar topik "${keyword}" tidak ditemukan.`);
+                    it.currentImgIdx = -1;
                 }
                 
                 it.currentImgIdx = (it.currentImgIdx + 1) % it.imagePool.length;
                 const newUrl = it.imagePool[it.currentImgIdx];
                 
-                const imgRes = await fetch(newUrl);
-                const blob = await imgRes.blob();
+                const imgResponse = await fetch(newUrl);
+                const blob = await imgResponse.blob();
                 const reader = new FileReader();
                 reader.onloadend = () => {
-                    it.manualImg = reader.result;
+                    hasilGenerate[idx].manualImg = reader.result;
                     document.getElementById(`img-preview-${idx}`).src = reader.result;
                     document.getElementById(`img-preview-${idx}`).style.display = 'block';
                     btn.innerHTML = "🔄 Ganti (Mesin Ganda)";
@@ -565,7 +607,7 @@
                 reader.readAsDataURL(blob);
 
             } catch (e) {
-                alert("❌ Gagal memuat: " + e.message);
+                alert("❌ Gagal terhubung ke mesin pencari gambar. Pastikan internet jalan.");
                 btn.innerHTML = it.manualImg ? "🔄 Ganti (Mesin Ganda)" : "🔍 Cari Gambar Otomatis";
                 btn.disabled = false;
             }
